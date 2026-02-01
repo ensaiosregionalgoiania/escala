@@ -565,40 +565,25 @@
                 <div id="notation"></div>
             </div>
             
-            <div class="timer-section">
-                <div class="timer-box" style="width: 20%;">
-                    <div style="width: 100%; padding: 5px; border: 1px solid #0a0321; text-align: left; box-sizing: border-box;">
-                        <div style="font-size: 0.9em; font-weight: bold;">Tempo</div>
-                        <div class="progress-container" style="width: 100%; border: 1px solid #0a0321;">
-                            <div id="progressBar" class="progress-bar" style="width: 100%;"></div>
-                        </div>
-                    </div>
+            <div style="position: absolute; top:8%; ; left:30%; text-align: left; width: 20%;">
+                <div class="progress-container" style="top: 50%; width: 100%; border: 1px solid #0a0321;">
+                    <div id="progressBar" class="progress-bar" style="width: 100%;"></div>
                 </div>
-                <div class="timer-box" style="width: 30%;">
-                    <div style="width: 30%; padding: 5px; border: 1px solid #0a0321; text-align: left; box-sizing: border-box;">
-                        <div style="font-size: 0.9em; font-weight: bold;">Acertos</div>
-                        <div style="display: flex; gap: 8px;">
-                            <span id="Acertos" style="font-size:20px; text-align: center; font-weight: bold;"><b>0</b></span>
-                        </div>
-                    </div>
-                    <div style="width: 70%; padding: 10px; border: 1px solid #0a0321; display: flex; flex-direction: column; align-items: flex-start; gap: 5px;">
-                        <div style="font-size: 0.9em; font-weight: bold;">Erros</div>
-                        <div style="display: flex; gap: 8px;">
-                            <span id="erro1" class="mostra-erro">❌</span>
-                            <span id="erro2" class="mostra-erro">❌</span>
-                            <span id="erro3" class="mostra-erro">❌</span>
-                            <span id="erro4" class="mostra-erro">❌</span>
-                            <span id="erro5" class="mostra-erro">❌</span>
-                        </div>
-                    </div>                    
-                </div> 
-                
-                <div class="timer-box" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 50%; border: 1px solid #0a0321;">
-                    <button class="note-btn note-mi clave-active" id="claveSOL" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄞</button>
-                    <button class="note-btn note-mi" id="claveFA" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢</button>
-                    <button class="note-btn note-mi" id="claveDO" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄡</button>
-                </div>            
-            </div>            
+            </div>
+            <div style="position: absolute; top:5%; ; left:4%; text-align: left;">
+                <div style="font-size: 1.2em; font-weight: bold;">Pontos: 
+                    <span id="Acertos"><b>0</b></span>
+                </div>
+            </div>
+            <div style="position: absolute; top:5%; ; left:70%; text-align: left;">
+                <div style="font-size: 1.2em; font-weight: bold;">Erros: 
+                    <span id="erro1" class="mostra-erro">❌</span>
+                    <span id="erro2" class="mostra-erro">❌</span>
+                    <span id="erro3" class="mostra-erro">❌</span>
+                    <span id="erro4" class="mostra-erro">❌</span>
+                    <span id="erro5" class="mostra-erro">❌</span>
+                </div>
+            </div>                    
             
             <div class="notes-grid">
                 <button class="note-btn note-sol" onclick="checkAnswer('C')">Dó</button>
@@ -609,6 +594,13 @@
                 <button class="note-btn note-sol" onclick="checkAnswer('A')">Lá</button>
                 <button class="note-btn note-sol" onclick="checkAnswer('B')">Si</button>
             </div>
+
+            <div class="timer-box" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 50%; border: 1px solid #0a0321;">
+                <button class="note-btn note-mi clave-active" id="claveSOL" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄞</button>
+                <button class="note-btn note-mi" id="claveFA" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢</button>
+                <button class="note-btn note-mi" id="claveDO" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄡</button>
+            </div>            
+
         </div>
     </div>
     
@@ -1412,7 +1404,7 @@
 🎯 Precisão: ${precisao}%
 🗝️ Clave: ${Clave === 'SOL' ? 'Sol' : Clave === 'FA' ? 'Fá' : 'Dó'}
 
-🏆 Desafie-se também em: https://ensaiosregionalgoiania.github.io/ensaios/teste.html
+🏆 Desafie-se também em: https://ensaiosregionalgoiania.github.io/escala/index.html
 
 #TreinoMusical #AprendaMúsica #JogoMusical`;
             
