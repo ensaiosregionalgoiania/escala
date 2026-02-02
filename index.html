@@ -669,7 +669,7 @@
                 <button class="note-btn note-mi clave-active" id="claveSOL" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄞</button>
                 <button class="note-btn note-mi" id="claveFA" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢</button>
                 <button class="note-btn note-mi" id="claveDO" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄡</button>
-                <button class="note-btn note-la" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="showGameOver();">parar</button>
+                <button class="note-btn note-la" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="showGameOver();">Parar</button>
             </div>
         </div>
     </div>
@@ -856,7 +856,7 @@
                 //'c/5', 'e/5', 'a/4', 'f/4',
                 //'e/5', 'f/4', 'a/4', 'c/5',
                 //'f/4', 'e/5', 'c/5', 'a/4',
-                //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
+                'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
                 //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
                 //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
                 //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
@@ -873,7 +873,7 @@
                 //'c/4', 'e/4', 'd/4', 'b/3',
                 //'b/3', 'e/4', 'd/4', 'c/4',
                 //'b/3', 'c/4', 'd/4', 'e/4',
-                //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
+                'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6'
                 //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
                 //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
                 //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
@@ -1194,7 +1194,6 @@
 
             // Resetar timer
             timeLeft = TEMPO_RESPOSTA;
-            
             // Iniciar contagem
             gameActive = true;
             timer = setInterval(updateTimer, 1000);
@@ -1281,7 +1280,7 @@
                 posicao = Notas.indexOf(currentNote) + 1;
                 currentNote = Notas.charAt(posicao); 
             }
-            if (indiceSequencia == 0) {
+            if (indiceSequencia == 0 && modoIniciante) {
                 setTimeout(showGameOver, 1000);
             }
             if (gameOver || !gameActive) return;
@@ -1580,6 +1579,7 @@
         // Funções do modo iniciante
         function toggleModoIniciante(ativado) {
             modoIniciante = ativado;
+            //TEMPO_RESPOSTA = 20;
             const niveisContainer = document.getElementById('niveisContainer');
             
             if (niveisContainer) {
