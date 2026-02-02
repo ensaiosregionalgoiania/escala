@@ -539,12 +539,60 @@
             line-height: 1.5;
         }
 
-    /* Adicione no final da seção <style> */
-    .game-over-modal .fullscreen-btn,
-    .game-over-modal .sound-btn {
-        display: none !important;
-    }        
+        .game-over-modal .fullscreen-btn,
+        .game-over-modal .sound-btn {
+            display: none !important;
+        }
         
+        /* Controles do modo iniciante */
+        .modo-iniciante-controls {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .nivel-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+        
+        .nivel-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            background: #667eea;
+            color: white;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nivel-btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .nivel-btn.active {
+            background: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        
+        .checkbox-container label {
+            font-size: 1em;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -565,23 +613,45 @@
                 <div id="notation"></div>
             </div>
             
-            <div style="position: absolute; top:8%; ; left:30%; text-align: left; width: 20%;">
+            <div style="position: absolute; top:8%; left:30%; text-align: left; width: 20%;">
                 <div class="progress-container" style="top: 50%; width: 100%; border: 1px solid #0a0321;">
                     <div id="progressBar" class="progress-bar" style="width: 100%;"></div>
                 </div>
             </div>
-            <div style="position: absolute; top:5%; ; left:4%; text-align: left;">
+            <div style="position: absolute; top:5%; left:4%; text-align: left;">
                 <div style="font-size: 1.2em; font-weight: bold;">Pontos: 
                     <span id="Acertos"><b>0</b></span>
                 </div>
             </div>
-            <div style="position: absolute; top:5%; ; left:70%; text-align: left;">
+            <div style="position: absolute; top:5%; left:70%; text-align: left;">
                 <div style="font-size: 1.2em; font-weight: bold;">Erros: 
                     <span id="erro1" class="mostra-erro">❌</span>
                     <span id="erro2" class="mostra-erro">❌</span>
                     <span id="erro3" class="mostra-erro">❌</span>
                     <span id="erro4" class="mostra-erro">❌</span>
                     <span id="erro5" class="mostra-erro">❌</span>
+                </div>
+            </div>
+            
+            <!-- Controles do modo iniciante -->
+            <div style="position: absolute; top:8%; left:55%; text-align: left; width: 40%;">
+                <div class="modo-iniciante-controls">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="modoIniciante" onchange="toggleModoIniciante(this.checked)" style="transform: scale(1.2);">
+                        <label for="modoIniciante">🎓 Modo Iniciante</label>
+                    </div>
+                    
+                    <!--<div id="niveisContainer" style="display: none;">
+                        <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Nível:</div>
+                        <div class="nivel-buttons">
+                            <button class="nivel-btn" onclick="mudarNivel('linhas')" id="btnLinhas">Linhas</button>
+                            <button class="nivel-btn" onclick="mudarNivel('espacos')" id="btnEspacos">Espaços</button>
+                            <button class="nivel-btn" onclick="mudarNivel('linhasEspacos')" id="btnLinhasEspacos">L+E</button>
+                            <button class="nivel-btn" onclick="mudarNivel('graves')" id="btnGraves">Graves</button>
+                            <button class="nivel-btn" onclick="mudarNivel('agudas')" id="btnAgudas">Agudas</button>
+                            <button class="nivel-btn" onclick="mudarNivel('completa')" id="btnCompleta">Completa</button>
+                        </div>
+                    </div>-->
                 </div>
             </div>                    
             
@@ -600,8 +670,7 @@
                 <button class="note-btn note-mi" id="claveFA" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢</button>
                 <button class="note-btn note-mi" id="claveDO" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄡</button>
                 <button class="note-btn note-la" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="showGameOver();">Parar</button>
-            </div>            
-
+            </div>
         </div>
     </div>
     
@@ -627,7 +696,8 @@
                 </div>
                 <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
                     Total de notas: <span style="font-weight: bold;" id="finalTotal">0</span><br>
-                    Clave: <span style="font-weight: bold;" id="finalClave">Sol</span>
+                    Clave: <span style="font-weight: bold;" id="finalClave">Sol</span><br>
+                    <span id="finalModo">Modo: Normal</span>
                 </div>
                 <div style="margin-top: 10px; padding: 10px; background: #fff; border-radius: 10px; border: 1px dashed #ddd;">
                     <div style="font-size: 0.8em; color: #888;">Compartilhe seu resultado!</div>
@@ -670,14 +740,6 @@
         Resultado copiado para a área de transferência! 📋
     </div>
 
-<!-- Adicione após o div do progresso -->
-<div style="position: absolute; top:8%; left:60%; text-align: left; width: 35%;">
-    <label style="font-size: 0.9em; font-weight: bold; color: #333;">
-        <input type="checkbox" id="modoIniciante" onchange="toggleModoIniciante(this.checked)" style="transform: scale(1.2); margin-right: 5px;">
-        🎓 Modo Iniciante
-    </label>
-</div>    
-
     <script>
         // Variáveis do jogo
         const TEMPO_RESPOSTA = 10;
@@ -695,6 +757,13 @@
         let soundEnabled = true;
         let audioContext = null;
         let soundActivated = false;
+        
+        // Variáveis do modo iniciante
+        let modoIniciante = false;
+        let sequenciaAtual = [];
+        let indiceSequencia = 0;
+        let nivelAtual = 'linhas';
+        let notaEscolhida = '';
         
         // Mapeamento de notas para cada clave
         const notasPorClave = {
@@ -763,6 +832,88 @@
             ["C6", 1046.50],
             ["D6", 1174.66]
         ];
+        
+        // Banco de sequências para modo iniciante
+        const sequenciasIniciante = {
+            // Nível 1: Linhas (5 notas)
+            linhas: [
+                'e/4', 'g/4', 'b/4', 'd/5', 'f/5',
+                //'e/4', 'g/4', 'b/4', 'd/5', 'f/5',
+                //'e/4', 'g/4', 'b/4', 'd/5', 'f/5',
+                //'e/4', 'g/4', 'b/4', 'd/5', 'f/5',
+                //'d/5', 'b/4', 'e/4', 'f/5', 'g/4',
+                //'b/4', 'd/5', 'f/5', 'e/4', 'g/4',
+                //'g/4', 'f/5', 'e/4', 'd/5', 'b/4',
+                //'g/4', 'b/4', 'f/5', 'e/4', 'd/5',
+                //'b/4', 'e/4', 'g/4', 'f/5', 'd/5',
+                'f/4', 'a/4', 'c/5', 'e/5',
+                //'f/4', 'a/4', 'c/5', 'e/5',
+                //'f/4', 'a/4', 'c/5', 'e/5',
+                //'f/4', 'a/4', 'c/5', 'e/5',
+                //'a/4', 'f/4', 'c/5', 'e/5',
+                //'a/4', 'e/5', 'c/5', 'f/4',
+                //'c/5', 'f/4', 'a/4', 'e/5',
+                //'c/5', 'e/5', 'a/4', 'f/4',
+                //'e/5', 'f/4', 'a/4', 'c/5',
+                //'f/4', 'e/5', 'c/5', 'a/4',
+                //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
+                //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
+                //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
+                //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
+                //'e/4', 'g/4', 'f/4', 'a/4', 'g/4', 'b/4', 'a/4', 'c/5', 'b/4', 'd/5', 'c/5', 'e/5', 'd/5', 'f/5',
+                //'e/4', 'a/4', 'f/4', 'b/4', 'g/4', 'c/5', 'a/4', 'd/5', 'b/4', 'e/5', 'c/5', 'f/5', 'd/5',
+                //'e/4', 'b/4', 'f/4', 'c/5', 'g/4', 'd/5', 'a/4', 'e/5', 'b/4', 'f/5', 'c/5', 'd/5',
+                //'e/4', 'c/5', 'f/4', 'd/5', 'g/4', 'e/5', 'a/4', 'f/5', 'b/4', 'c/5', 'd/5',
+                //'e/4', 'd/4', 'c/4', 'b/3',
+                //'e/4', 'd/4', 'c/4', 'b/3',
+                //'e/4', 'd/4', 'c/4', 'b/3',
+                //'e/4', 'd/4', 'c/4', 'b/3',
+                //'d/4', 'e/4', 'c/4', 'b/3',
+                //'e/4', 'd/4', 'c/4', 'b/3',
+                //'c/4', 'e/4', 'd/4', 'b/3',
+                //'b/3', 'e/4', 'd/4', 'c/4',
+                //'b/3', 'c/4', 'd/4', 'e/4',
+                //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
+                //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
+                //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
+                //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
+                //'f/5', 'a/5', 'g/5', 'b/5', 'a/5', 'c/6', 'b/5', 'd/6',
+                //'f/5', 'b/5', 'g/5', 'c/6', 'a/5', 'd/6', 'b/5',
+                //'f/5', 'c/6', 'g/5', 'd/6', 'a/5', 'b/5',
+                //'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
+                //'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
+                //'b/5', 'c/6', 'd/6',
+                //'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
+                //'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
+                //'b/5', 'c/6', 'd/6',
+                //'b/3', 'd/4', 'c/4', 'e/4', 'd/4', 'f/4', 'e/4', 'f/4',
+                //'e/4', 'g/4', 'f/4', 'a/4', 'g/4', 'b/4', 'a/4', 'c/5',
+                //'b/4', 'd/5', 'c/5', 'e/5', 'd/5', 'f/5', 'e/5', 'f/5',
+                //'e/5', 'g/5', 'f/5', 'a/5', 'g/5', 'b/5', 'a/5', 'c/6',
+                //'b/5', 'd/6', 'c/6',
+                //'b/3', 'e/4', 'c/4', 'f/4', 'd/4', 'g/4', 'e/4', 'a/4',
+                //'f/4', 'b/4', 'g/4', 'c/5', 'a/4', 'd/5', 'b/4', 'e/5',
+                //'c/5', 'f/5', 'd/5', 'g/5', 'e/5', 'a/5', 'f/5', 'b/5',
+                //'g/5', 'c/6', 'a/5', 'd/6', 'b/5', 'c/6', 'd/6'
+            ]
+        };
+        
+        // Mapeamento de nota musical para letra
+        const mapaNotasParaLetras = {
+            'b/3': 'B', 'c/4': 'C', 'd/4': 'D', 'e/4': 'E', 'f/4': 'F', 'g/4': 'G', 'a/4': 'A',
+            'b/4': 'B', 'c/5': 'C', 'd/5': 'D', 'e/5': 'E', 'f/5': 'F', 'g/5': 'G', 'a/5': 'A',
+            'b/5': 'B', 'c/6': 'C', 'd/6': 'D'
+        };
+        
+        // Nomes dos níveis para exibição
+        const nomesNiveis = {
+            'linhas': 'LINHAS',
+            'espacos': 'ESPAÇOS',
+            'linhasEspacos': 'LINHAS + ESPAÇOS',
+            'graves': 'NOTAS GRAVES',
+            'agudas': 'NOTAS AGUDAS',
+            'completa': 'ESCALA COMPLETA'
+        };
        
         // Inicializar o jogo
         document.addEventListener('DOMContentLoaded', function() {
@@ -922,11 +1073,6 @@
             } else if (element.msRequestFullscreen) {
                 element.msRequestFullscreen();
             }
-            
-            // Mostrar instrução para girar o celular em retrato
-            //if (window.innerHeight > window.innerWidth) {
-            //    alert("Para melhor experiência, gire seu celular para modo paisagem (horizontal)!");
-            //}
         }
         
         function exitFullscreen() {
@@ -966,9 +1112,13 @@
             
             // Recriar a notação para ajustar ao novo tamanho
             if (currentNote) {
-                const octaves = notasPorClave[Clave][currentNote];
-                const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
-                createNotation(selectedOctave);
+                if (modoIniciante && notaEscolhida) {
+                    createNotation(notaEscolhida);
+                } else {
+                    const octaves = notasPorClave[Clave][currentNote];
+                    const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
+                    createNotation(selectedOctave);
+                }
             }
         }
         
@@ -1009,20 +1159,33 @@
                 clearInterval(timer);
             }
             
-            // Sortear nova nota
-            const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-            currentNote = notes[Math.floor(Math.random() * notes.length)];
-            
-            // Sortear oitava baseada na clave atual
-            const octaves = notasPorClave[Clave][currentNote];
-            const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
-            
-            // Criar notação com a clave atual
-            createNotation(selectedOctave);
+            if (modoIniciante && sequenciaAtual.length > 0) {
+                // Modo iniciante: segue a sequência pré-definida
+                notaEscolhida = sequenciaAtual[indiceSequencia];
+                indiceSequencia = (indiceSequencia + 1) % sequenciaAtual.length;
+                // Converter nota do formato "e/4" para letra "E"
+                currentNote = mapaNotasParaLetras[notaEscolhida] || 'C';
+                
+                // Criar notação com a nota específica
+                createNotation(notaEscolhida);
+                
+            } else {
+                // Modo normal: sorteio aleatório
+                const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+                currentNote = notes[Math.floor(Math.random() * notes.length)];
+                
+                // Sortear oitava baseada na clave atual
+                const octaves = notasPorClave[Clave][currentNote];
+                const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
+                
+                // Criar notação com a clave atual
+                createNotation(selectedOctave);
+                notaEscolhida = selectedOctave;
+            }
             
             // Tocar som da nota (se habilitado)
             if (soundEnabled) {
-                let frequencia = pesquisarFrequencia(selectedOctave.toUpperCase().replace("/", ""));
+                let frequencia = pesquisarFrequencia(notaEscolhida.toUpperCase().replace("/", ""));
                 if (frequencia) tocarNota(frequencia);
             }
 
@@ -1111,13 +1274,15 @@
         function checkAnswer(userNote) {
             let Notas = "ABCDEFGAB"
             let Posicao = 0
-            let novaNota = ""
             if (Clave === "FA") {
                 posicao = Notas.indexOf(currentNote) + 2;
                 currentNote = Notas.charAt(posicao); 
             } else if (Clave === "DO") {
                 posicao = Notas.indexOf(currentNote) + 1;
                 currentNote = Notas.charAt(posicao); 
+            }
+            if (indiceSequencia == 0) {
+                setTimeout(showGameOver, 1000);
             }
             if (gameOver || !gameActive) return;
             
@@ -1177,8 +1342,13 @@
         
         function updateStats() {
             document.getElementById('Acertos').textContent = score;
-            if (errors != 0) {
-                document.getElementById('erro' + errors).classList.remove('mostra-erro');
+            for (let i = 1; i <= 5; i++) {
+                const erro = document.getElementById('erro' + i);
+                if (i <= errors) {
+                    erro.classList.remove('mostra-erro');
+                } else {
+                    erro.classList.add('mostra-erro');
+                }
             }
         }
         
@@ -1197,6 +1367,10 @@
                 'DO': 'Dó'
             };
             document.getElementById('finalClave').textContent = claveNomes[Clave];
+            
+            // Mostrar modo
+            const modoTexto = modoIniciante ? `Modo Iniciante (${nomesNiveis[nivelAtual]})` : 'Modo Normal';
+            document.getElementById('finalModo').textContent = modoTexto;
             
             // Mostrar modal com efeito
             document.getElementById('gameOverModal').style.display = 'flex';
@@ -1370,13 +1544,13 @@
         
         function pesquisarFrequencia(nota) {
             const indice = escala.findIndex(item => item[0] === nota);
-            let voltaFrequencia = 0
+            let voltaFrequencia = 0;
             if (Clave === "FA") {
-                voltaFrequencia = 5
+                voltaFrequencia = 5;
             } else if (Clave === "DO") {
-                voltaFrequencia = 6
+                voltaFrequencia = 6;
             }
-            const encontrado = escala[indice-voltaFrequencia];
+            const encontrado = escala[indice - voltaFrequencia];
             return encontrado ? encontrado[1] : null;
         }
 
@@ -1393,10 +1567,104 @@
             
             // Recriar a nota atual com a nova clave
             if (currentNote) {
-                const octaves = notasPorClave[Clave][currentNote];
-                const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
-                createNotation(selectedOctave);
+                if (modoIniciante && notaEscolhida) {
+                    createNotation(notaEscolhida);
+                } else {
+                    const octaves = notasPorClave[Clave][currentNote];
+                    const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
+                    createNotation(selectedOctave);
+                }
             }
+        }
+        
+        // Funções do modo iniciante
+        function toggleModoIniciante(ativado) {
+            modoIniciante = ativado;
+            const niveisContainer = document.getElementById('niveisContainer');
+            
+            if (niveisContainer) {
+                niveisContainer.style.display = ativado ? 'block' : 'none';
+            }
+            
+            if (ativado) {
+                // Iniciar com nível 1 (linhas)
+                iniciarNivelIniciante('linhas');
+                atualizarBotoesNivel();
+                
+                // Resetar jogo
+                restartGame();
+                // Mostrar mensagem
+                showToast('🎓 Modo Iniciante ativado! Começando com exercício de LINHAS.');
+            } else {
+                // Voltar ao modo normal
+                showToast('🎵 Modo normal ativado.');
+                restartGame();
+            }
+        }
+        
+        function iniciarNivelIniciante(nivel) {
+            nivelAtual = nivel;
+            // Pegar todas as notas do nível
+            const todasNotas = [...sequenciasIniciante[nivel]];
+            // Embaralhar as notas
+            //shuffleArray(todasNotas);
+            
+            // Definir sequência atual
+            sequenciaAtual = todasNotas;
+            indiceSequencia = 0;
+
+            console.log(`Nível: ${nivel}, Total de notas: ${sequenciaAtual.length}`);
+        }
+        
+        function mudarNivel(nivel) {
+            if (!modoIniciante) return;
+            
+            iniciarNivelIniciante(nivel);
+            atualizarBotoesNivel();
+            
+            // Resetar para começar o novo nível
+            score = 0;
+            errors = 0;
+            total = 0;
+            streak = 0;
+            
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById('erro' + i).classList.add('mostra-erro');
+            }
+            
+            updateStats();
+            nextNote();
+            alert("Parabens! Voce concluiu os estudos!")
+            
+            showToast(`🎓 Nível alterado: ${nomesNiveis[nivel]}`);
+        }
+        
+        function atualizarBotoesNivel() {
+            // Remover classe active de todos os botões
+            //const botoes = document.querySelectorAll('.nivel-btn');
+            //botoes.forEach(btn => {
+            //    btn.classList.remove('active');
+            //    btn.style.background = '#667eea';
+            //});
+            
+            // Adicionar classe active ao botão atual
+            //const btnAtual = document.getElementById('btn' + capitalizarPrimeiraLetra(nivelAtual));
+            //if (btnAtual) {
+            //    btnAtual.classList.add('active');
+            //    btnAtual.style.background = '#4CAF50';
+            //}
+        }
+        
+        function capitalizarPrimeiraLetra(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
         
         // Função para compartilhar resultados
@@ -1405,6 +1673,8 @@
             const precisao = total > 0 ? Math.round((score / total) * 100) : 0;
             
             // Texto para compartilhamento
+            const modoTexto = modoIniciante ? `Modo Iniciante (${nomesNiveis[nivelAtual]})` : 'Modo Normal';
+            
             const shareText = `🎵 Treino Musical - Resultados 🎵
 
 🎯 Acertos: ${score}
@@ -1412,6 +1682,7 @@
 📊 Total de notas: ${total}
 🎯 Precisão: ${precisao}%
 🗝️ Clave: ${Clave === 'SOL' ? 'Sol' : Clave === 'FA' ? 'Fá' : 'Dó'}
+🎓 ${modoTexto}
 
 🏆 Desafie-se também em: https://ensaiosregionalgoiania.github.io/escala/index.html
 
@@ -1466,7 +1737,6 @@
                 toast.style.display = 'none';
             }, 3000);
         }
-
     </script>
 </body>
 </html>
