@@ -684,7 +684,7 @@
                 </div>
             </div>
             <div style="position: absolute; top:5%; left:4%; text-align: left;">
-                <div style="font-size: 1.2em; font-weight: bold;">Pontos:: 
+                <div style="font-size: 1.2em; font-weight: bold;">Pontos:
                     <span id="Acertos"><b>0</b></span>
                 </div>
             </div>
@@ -1558,6 +1558,7 @@ function updateStats() {
 function showGameOver() {
     // GARANTIR QUE OS ERROS NÃO ULTRAPASSEM 5
     if (errors > 5) {
+        //alert(errors)
         errors = 5;
     }
     
@@ -1851,7 +1852,7 @@ function toggleModoIniciante(ativado) {
             
             // Definir sequência atual
             sequenciaAtual = todasNotas;
-            indiceSequencia = 258; //aqui
+            indiceSequencia = 0; //aqui
 
             console.log(`Nível: ${nivel}, Total de notas: ${sequenciaAtual.length}`);
         }
