@@ -593,7 +593,72 @@
             color: #333;
             cursor: pointer;
         }
+
+/* Adicione este CSS na seção de estilos */
+.tutorial-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.tutorial-content {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.4s ease-out;
+}
+
+.tutorial-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.tutorial-message {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.tutorial-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: linear-gradient(45deg, #06D6A0, #06A678);
+    color: white;
+    box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3);
+}
+
+.tutorial-btn:hover {
+    background: linear-gradient(45deg, #05c090, #059068);
+}
+
+.tutorial-btn:active {
+    transform: scale(0.98);
+}
+
     </style>
+
+
 </head>
 
 <body>
@@ -619,7 +684,7 @@
                 </div>
             </div>
             <div style="position: absolute; top:5%; left:4%; text-align: left;">
-                <div style="font-size: 1.2em; font-weight: bold;">Pontos: 
+                <div style="font-size: 1.2em; font-weight: bold;">Pontos:: 
                     <span id="Acertos"><b>0</b></span>
                 </div>
             </div>
@@ -667,7 +732,7 @@
 
             <div class="timer-box" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 50%; border: 1px solid #0a0321;">
                 <button class="note-btn note-mi clave-active" id="claveSOL" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄞</button>
-                <button class="note-btn note-mi" id="claveFA" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢 (1)</button>
+                <button class="note-btn note-mi" id="claveFA" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢</button>
                 <button class="note-btn note-mi" id="claveDO" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄡</button>
                 <button class="note-btn note-la" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="showGameOver();">Parar</button>
             </div>
@@ -740,6 +805,26 @@
         Resultado copiado para a área de transferência! 📋
     </div>
 
+            <div id="nomeNota" style="z-index: 1000 !important; position: absolute; top:20%; left:30%; text-align: left; width: 20%;">Nota</div>
+
+<!-- Modal de Tutorial -->
+<div class="tutorial-modal" id="tutorialModal">
+    <div class="tutorial-content">
+        <div class="tutorial-title" id="tutorialTitle">🎓 Vamos Aprender!</div>
+        <div class="tutorial-message" id="tutorialMessage">
+            Vamos aprender as notas que aparecem nas linhas!
+        </div>
+        <button class="tutorial-btn" onclick="closeTutorial()">
+            ✅ Vamos lá!
+        </button>
+    </div>
+</div>
+
+<!-- Toast para "Agora é com você" -->
+<div class="toast" id="agoraComVoceToast" style="background: #FF9800;">
+    Agora é com você! 👊
+</div>
+
     <script>
         // Variáveis do jogo
         const TEMPO_RESPOSTA = 10;
@@ -764,6 +849,8 @@
         let indiceSequencia = 0;
         let nivelAtual = 'linhas';
         let notaEscolhida = '';
+let mostrarNomeNota = true;
+let tutorialAtivo = false;
         
         // Mapeamento de notas para cada clave
         const notasPorClave = {
@@ -795,7 +882,7 @@
                 'B': ['b/4', 'b/5']
             }
         };
-        
+        //aqui
         const noteNames = {
             'C': 'Dó',
             'D': 'Ré',
@@ -807,94 +894,126 @@
         };
         
         const escala = [
-            ["B2", 123.47],
-            ["C3", 130.81],
-            ["D3", 146.83],
-            ["E3", 164.81],
-            ["F3", 174.61],
-            ["G3", 196.00],
-            ["A3", 220.00],
-            ["B3", 246.94],
-            ["C4", 261.63],
-            ["D4", 293.66],
-            ["E4", 329.63],
-            ["F4", 349.23],
-            ["G4", 392.00],
-            ["A4", 440.00],
-            ["B4", 493.88],
-            ["C5", 523.25],
-            ["D5", 587.33],
-            ["E5", 659.25],
-            ["F5", 698.46],
-            ["G5", 783.99],
-            ["A5", 880.00],
-            ["B5", 987.77],
-            ["C6", 1046.50],
-            ["D6", 1174.66]
+            ["B2", 123.47], //162
+            ["C3", 130.81], //157
+            ["D3", 146.83], //152
+            ["E3", 164.81], //147
+            ["F3", 174.61], //142
+            ["G3", 196.00], //137
+            ["A3", 220.00], //132
+            ["B3", 246.94], //127 - 0.85
+            ["C4", 261.63], //122 - 0.81
+            ["D4", 293.66], //117 - 0.77
+            ["E4", 329.63], //112 - 0.73
+            ["F4", 349.23], //107 - 0.68
+            ["G4", 392.00], //102 - 0.64
+            ["A4", 440.00], //97  - 0.59
+            ["B4", 493.88], //92  - 0.56
+            ["C5", 523.25], //87  - 0.52
+            ["D5", 587.33], //82  - 0.48
+            ["E5", 659.25], //77  - 0.43
+            ["F5", 698.46], //72  - 0.39
+            ["G5", 783.99], //67  - 0.35
+            ["A5", 880.00], //62  - 0.31
+            ["B5", 987.77], //52  - 0.27
+            ["C6", 1046.50], //47 - 0.22
+            ["D6", 1174.66] //42  - 0.18
+//aqui
         ];
         
         // Banco de sequências para modo iniciante
         const sequenciasIniciante = {
             // Nível 1: Linhas (5 notas)
             linhas: [
-                'e/4', 'g/4', 'b/4', 'd/5', 'f/5',
-                //'e/4', 'g/4', 'b/4', 'd/5', 'f/5',
-                //'e/4', 'g/4', 'b/4', 'd/5', 'f/5',
-                //'e/4', 'g/4', 'b/4', 'd/5', 'f/5',
-                //'d/5', 'b/4', 'e/4', 'f/5', 'g/4',
-                //'b/4', 'd/5', 'f/5', 'e/4', 'g/4',
-                //'g/4', 'f/5', 'e/4', 'd/5', 'b/4',
-                //'g/4', 'b/4', 'f/5', 'e/4', 'd/5',
-                //'b/4', 'e/4', 'g/4', 'f/5', 'd/5',
-                'f/4', 'a/4', 'c/5', 'e/5',
-                //'f/4', 'a/4', 'c/5', 'e/5',
-                //'f/4', 'a/4', 'c/5', 'e/5',
-                //'f/4', 'a/4', 'c/5', 'e/5',
-                //'a/4', 'f/4', 'c/5', 'e/5',
-                //'a/4', 'e/5', 'c/5', 'f/4',
-                //'c/5', 'f/4', 'a/4', 'e/5',
-                //'c/5', 'e/5', 'a/4', 'f/4',
-                //'e/5', 'f/4', 'a/4', 'c/5',
-                //'f/4', 'e/5', 'c/5', 'a/4',
+                //Linhas - Mostra nome da Nota
+                // 01
+                'e/4', 'g/4', 'b/4', 'd/5', 'f/5','e/4', 'g/4', 'b/4', 'd/5', 'f/5',
+                //Linhas - Nao mostra da Nota
+                // 11
+                'e/4', 'g/4', 'b/4', 'd/5', 'f/5','e/4', 'g/4', 'b/4', 'd/5', 'f/5',
+                //Linhas - randomico
+                'd/5', 'b/4', 'e/4', 'f/5', 'g/4', 'b/4', 'd/5', 'f/5', 'e/4', 'g/4',
+                'g/4', 'f/5', 'e/4', 'd/5', 'b/4', 'g/4', 'b/4', 'f/5', 'e/4', 'd/5',
+                'b/4', 'e/4', 'g/4', 'f/5', 'd/5', 'f/4', 'a/4', 'c/5', 'e/5',
+
+                //Espacos - Mostra nome da Nota
+                // 50
+                'f/4', 'a/4', 'c/5', 'e/5', 'f/4', 'a/4', 'c/5', 'e/5',
+                //Espacos - Nao mostra nome da Nota
+                // 58 aqui
+                'f/4', 'a/4', 'c/5', 'e/5', 'a/4', 'f/4', 'c/5', 'e/5',
+                //Espacos - randomico
+                'a/4', 'e/5', 'c/5', 'f/4', 'c/5', 'f/4', 'a/4', 'e/5', 'c/5', 'e/5', 
+                'a/4', 'f/4', 'e/5', 'f/4', 'a/4', 'c/5', 'f/4', 'e/5', 'c/5', 'a/4', 
                 'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
-                //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
-                //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
-                //'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
-                //'e/4', 'g/4', 'f/4', 'a/4', 'g/4', 'b/4', 'a/4', 'c/5', 'b/4', 'd/5', 'c/5', 'e/5', 'd/5', 'f/5',
-                //'e/4', 'a/4', 'f/4', 'b/4', 'g/4', 'c/5', 'a/4', 'd/5', 'b/4', 'e/5', 'c/5', 'f/5', 'd/5',
-                //'e/4', 'b/4', 'f/4', 'c/5', 'g/4', 'd/5', 'a/4', 'e/5', 'b/4', 'f/5', 'c/5', 'd/5',
-                //'e/4', 'c/5', 'f/4', 'd/5', 'g/4', 'e/5', 'a/4', 'f/5', 'b/4', 'c/5', 'd/5',
-                //'e/4', 'd/4', 'c/4', 'b/3',
-                //'e/4', 'd/4', 'c/4', 'b/3',
-                //'e/4', 'd/4', 'c/4', 'b/3',
-                //'e/4', 'd/4', 'c/4', 'b/3',
-                //'d/4', 'e/4', 'c/4', 'b/3',
-                //'e/4', 'd/4', 'c/4', 'b/3',
-                //'c/4', 'e/4', 'd/4', 'b/3',
-                //'b/3', 'e/4', 'd/4', 'c/4',
-                //'b/3', 'c/4', 'd/4', 'e/4',
-                'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6'
-                //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
-                //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
-                //'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
-                //'f/5', 'a/5', 'g/5', 'b/5', 'a/5', 'c/6', 'b/5', 'd/6',
-                //'f/5', 'b/5', 'g/5', 'c/6', 'a/5', 'd/6', 'b/5',
-                //'f/5', 'c/6', 'g/5', 'd/6', 'a/5', 'b/5',
-                //'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
-                //'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
-                //'b/5', 'c/6', 'd/6',
-                //'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
-                //'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
-                //'b/5', 'c/6', 'd/6',
-                //'b/3', 'd/4', 'c/4', 'e/4', 'd/4', 'f/4', 'e/4', 'f/4',
-                //'e/4', 'g/4', 'f/4', 'a/4', 'g/4', 'b/4', 'a/4', 'c/5',
-                //'b/4', 'd/5', 'c/5', 'e/5', 'd/5', 'f/5', 'e/5', 'f/5',
-                //'e/5', 'g/5', 'f/5', 'a/5', 'g/5', 'b/5', 'a/5', 'c/6',
-                //'b/5', 'd/6', 'c/6',
-                //'b/3', 'e/4', 'c/4', 'f/4', 'd/4', 'g/4', 'e/4', 'a/4',
-                //'f/4', 'b/4', 'g/4', 'c/5', 'a/4', 'd/5', 'b/4', 'e/5',
-                //'c/5', 'f/5', 'd/5', 'g/5', 'e/5', 'a/5', 'f/5', 'b/5',
-                //'g/5', 'c/6', 'a/5', 'd/6', 'b/5', 'c/6', 'd/6'
+                
+                //Linhas e Espacos - Mostra nome da Nota
+                // 95
+                'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
+                'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
+                //Linhas e Espacos - Nao mostra nome da Nota
+                // 113
+                'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
+                'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
+                //Linhas e Espacos - Randomico
+                'e/4', 'g/4', 'f/4', 'a/4', 'g/4', 'b/4', 'a/4', 'c/5', 'b/4', 
+                'd/5', 'c/5', 'e/5', 'd/5', 'f/5', 'e/4', 'a/4', 'f/4', 'b/4', 
+                'g/4', 'c/5', 'a/4', 'd/5', 'b/4', 'e/5', 'c/5', 'f/5', 'd/5',
+                'e/4', 'b/4', 'f/4', 'c/5', 'g/4', 'd/5', 'a/4', 'e/5', 'b/4', 
+                'f/5', 'c/5', 'd/5', 'e/4', 'c/5', 'f/4', 'd/5', 'g/4', 'e/5', 
+                'a/4', 'f/5', 'b/4', 'c/5', 'd/5',
+
+                //Linhas e Espacos - Notas graves - mostrar nome da Nota
+                // 181
+                'e/4', 'd/4', 'c/4', 'b/3', 'e/4', 'd/4', 'c/4', 'b/3',
+                //Linhas e Espacos - Notas graves - Nao mostrar nome da Nota
+                //189
+                'e/4', 'd/4', 'c/4', 'b/3', 'e/4', 'd/4', 'c/4', 'b/3',
+                //Linhas e Espacos - Notas graves - Randomico
+                'd/4', 'e/4', 'c/4', 'b/3', 'e/4', 'd/4', 'c/4', 'b/3',
+                'c/4', 'e/4', 'd/4', 'b/3', 'b/3', 'e/4', 'd/4', 'c/4',
+                'b/3', 'c/4', 'd/4', 'e/4', 
+                
+
+                //Linhas e Espacos - Notas agudas - mostrar nome da Nota
+                // 217
+                'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
+                'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
+                //Linhas e Espacos - Notas agudas - Nao mostrar nome da Nota
+                // 229
+                'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
+                'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
+                //Linhas e Espacos - Notas agudas - Randomico
+                'f/5', 'a/5', 'g/5', 'b/5', 'a/5', 'c/6', 'b/5', 'd/6',
+                'f/5', 'b/5', 'g/5', 'c/6', 'a/5', 'd/6', 'b/5',
+                'f/5', 'c/6', 'g/5', 'd/6', 'a/5', 'b/5',
+
+                //Linhas e Espacos - Todas as Notas - Mostrar nome da Nota
+                // 262
+                'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
+                'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
+                'b/5', 'c/6', 'd/6',
+                'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
+                'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
+                'b/5', 'c/6', 'd/6',
+                //Linhas e Espacos - Todas as Notas - Nao mostrar nome da Nota
+                // 296
+                'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
+                'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
+                'b/5', 'c/6', 'd/6',
+                'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
+                'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
+                'b/5', 'c/6', 'd/6',
+                
+                'b/3', 'd/4', 'c/4', 'e/4', 'd/4', 'f/4', 'e/4', 'f/4',
+                'e/4', 'g/4', 'f/4', 'a/4', 'g/4', 'b/4', 'a/4', 'c/5',
+                'b/4', 'd/5', 'c/5', 'e/5', 'd/5', 'f/5', 'e/5', 'f/5',
+                'e/5', 'g/5', 'f/5', 'a/5', 'g/5', 'b/5', 'a/5', 'c/6',
+                'b/5', 'd/6', 'c/6',
+                'b/3', 'e/4', 'c/4', 'f/4', 'd/4', 'g/4', 'e/4', 'a/4',
+                'f/4', 'b/4', 'g/4', 'c/5', 'a/4', 'd/5', 'b/4', 'e/5',
+                'c/5', 'f/5', 'd/5', 'g/5', 'e/5', 'a/5', 'f/5', 'b/5',
+                'g/5', 'c/6', 'a/5', 'd/6', 'b/5', 'c/6', 'd/6'
             ]
         };
         
@@ -914,7 +1033,71 @@
             'agudas': 'NOTAS AGUDAS',
             'completa': 'ESCALA COMPLETA'
         };
-       
+
+// Defina os pontos de tutorial no vetor (baseado em indiceSequencia)
+const pontosTutorial = {
+    0: { // Antes da primeira nota (índice 0)
+        titulo: "🎓 Vamos Aprender!",
+        mensagem: "Vamos aprender as notas que aparecem nas <strong>LINHAS</strong> do pentagrama!",
+        mostrarNomeNota: true
+    },
+    11: { // Antes da nota 11 (índice 10)
+        tipo: "toast",
+        mensagem: "Agora é com você! 👊"
+    },
+    46: { // Antes da nota 51 (índice 50)
+        titulo: "🎉 Parabéns!",
+        mensagem: "Você aprendeu as notas das <strong>LINHAS</strong>. Agora vamos aprender as notas dos <strong>ESPAÇOS</strong>!",
+        mostrarNomeNota: true
+    },
+    58: { // Antes da nota 59 (índice 58)
+        tipo: "toast",
+        mensagem: "Agora é com você! 👊"
+    },
+    95: { // Antes da nota 98 (índice 97) aqui
+        titulo: "🎉 Parabéns!",
+        mensagem: "Você aprendeu as notas das linhas e dos espaços. Agora vamos aprender as notas das <strong>LINHAS E ESPAÇOS JUNTOS</strong>!",
+        mostrarNomeNota: true
+    },
+    113: { // Antes da nota 116 (índice 115)
+        tipo: "toast",
+        mensagem: "Agora é com você! 👊"
+    },
+    181: { // Antes da nota 184 (índice 183)
+        titulo: "🎉 Parabéns!",
+        mensagem: "Você aprendeu as notas das linhas e dos espaços juntos. Agora vamos aprender as <strong>NOTAS GRAVES</strong> das linhas e dos espaços juntos que ficam <strong>ABAIXO</strong> do pentagrama!",
+        mostrarNomeNota: true
+    },
+    189: { // Antes da nota 192 (índice 191)
+        tipo: "toast",
+        mensagem: "Agora é com você! 👊"
+    },
+    217: { // Antes da nota 226 (índice 225)
+        titulo: "🎉 Parabéns!",
+        mensagem: "Você aprendeu as notas graves das linhas e dos espaços juntos. Agora vamos aprender as <strong>NOTAS AGUDAS</strong> das linhas e dos espaços juntos que ficam <strong>ACIMA</strong> do pentagrama!",
+        mostrarNomeNota: true
+    },
+    229: { // Antes da nota 238 (índice 237)
+        tipo: "toast",
+        mensagem: "Agora é com você! 👊"
+    },
+    248: { // Antes da nota 250 (índice 249)
+        titulo: "🎉 Parabéns!",
+        mensagem: "Você aprendeu as notas agudas das linhas e dos espaços juntos. Agora vamos aprender <strong>TODAS AS NOTAS</strong> das linhas e dos espaços juntos!",
+        mostrarNomeNota: true
+    },
+    262: { // Antes da nota 262 (índice 261)
+        titulo: "🎉 Parabéns!",
+        mensagem: "Você aprendeu as notas agudas das linhas e dos espaços juntos. Agora vamos aprender <strong>TODAS AS NOTAS</strong> das linhas e dos espaços juntos!",
+        mostrarNomeNota: true
+    },
+    296: { // Antes da nota 296 (índice 295)
+        tipo: "toast",
+        mensagem: "Agora é com você! 👊"
+    }
+};
+
+        
         // Inicializar o jogo
         document.addEventListener('DOMContentLoaded', function() {
             updateStats();
@@ -1153,8 +1336,12 @@
         }
         
         function nextNote() {
-            if (gameOver) return;
-            
+    if (gameOver || tutorialAtivo) return;
+    
+    // Verificar se é modo iniciante e se ainda não começou
+    if (modoIniciante && indiceSequencia === 0) {
+        return; // Não começar até o tutorial ser fechado
+    }            
             if (timer) {
                 clearInterval(timer);
             }
@@ -1270,115 +1457,137 @@
             }
         }
         
-        function checkAnswer(userNote) {
-            let Notas = "ABCDEFGAB"
-            let Posicao = 0
-            if (Clave === "FA") {
-                posicao = Notas.indexOf(currentNote) + 2;
-                currentNote = Notas.charAt(posicao); 
-            } else if (Clave === "DO") {
-                posicao = Notas.indexOf(currentNote) + 1;
-                currentNote = Notas.charAt(posicao); 
-            }
-            if (indiceSequencia == 0 && modoIniciante) {
-                setTimeout(showGameOver, 1000);
-            }
-            if (gameOver || !gameActive) return;
-            
-            clearInterval(timer);
-            gameActive = false;
-            total++;
-            
-            // Apagar a nota imediatamente
-            createNotation(null, false);
+function checkAnswer(userNote) {
+    let Notas = "ABCDEFGAB"
+    let Posicao = 0
+    if (Clave === "FA") {
+        posicao = Notas.indexOf(currentNote) + 2;
+        currentNote = Notas.charAt(posicao); 
+    } else if (Clave === "DO") {
+        posicao = Notas.indexOf(currentNote) + 1;
+        currentNote = Notas.charAt(posicao); 
+    }
+    
+    // VERIFICAÇÃO ADICIONADA AQUI: Se já tem 5 erros, não processa mais
+    if (errors >= 5) {
+        showGameOver();
+        return;
+    }
+    
+    if (indiceSequencia == 0 && modoIniciante) {
+        setTimeout(showGameOver, 1000);
+    }
+    if (gameOver || !gameActive) return;
+    
+    clearInterval(timer);
+    gameActive = false;
+    total++;
+    
+    // Apagar a nota imediatamente
+    createNotation(null, false);
 
-            if (userNote === currentNote) {
-                // Acerto
-                score++;
-                streak++;
-                
-                mostrarSimboloNoPentagrama('✅');
-                
-                setTimeout(() => {
-                    nextNote();
-                }, 500);
-                
-            } else {
-                // Erro
-                errors++;
-                streak = 0;
-                
-                mostrarSimboloNoPentagrama('❌');
-                
-                if (errors >= 5) {
-                    setTimeout(showGameOver, 1000);
-                } else {
-                    setTimeout(() => {
-                        nextNote();
-                    }, 500);
-                }
-            }
-            
-            updateStats();
-            pararBarraProgresso();
-        }
+    if (userNote === currentNote) {
+        // Acerto
+        score++;
+        streak++;
         
-        function handleTimeOut() {
-            gameActive = false;
-            errors++;
-            streak = 0;
-            total++;
-            
-            if (errors >= 5) {
-                setTimeout(showGameOver, 1000);
-            } else {
-                setTimeout(nextNote, 2000);
-            }
-            
-            updateStats();
-            pararBarraProgresso();
-        }
+        mostrarSimboloNoPentagrama('✅');
         
-        function updateStats() {
-            document.getElementById('Acertos').textContent = score;
-            for (let i = 1; i <= 5; i++) {
-                const erro = document.getElementById('erro' + i);
-                if (i <= errors) {
-                    erro.classList.remove('mostra-erro');
-                } else {
-                    erro.classList.add('mostra-erro');
-                }
-            }
-        }
+        setTimeout(() => {
+            nextNote();
+        }, 500);
         
-        function showGameOver() {
-            gameOver = true;
-            clearInterval(timer);
-            
-            document.getElementById('finalScore').textContent = score;
-            document.getElementById('finalErrors').textContent = errors;
-            document.getElementById('finalTotal').textContent = total;
-            
-            // Mostrar a clave atual
-            const claveNomes = {
-                'SOL': 'Sol',
-                'FA': 'Fá',
-                'DO': 'Dó'
-            };
-            document.getElementById('finalClave').textContent = claveNomes[Clave];
-            
-            // Mostrar modo
-            const modoTexto = modoIniciante ? `Modo Iniciante (${nomesNiveis[nivelAtual]})` : 'Modo Normal';
-            document.getElementById('finalModo').textContent = modoTexto;
-            
-            // Mostrar modal com efeito
-            document.getElementById('gameOverModal').style.display = 'flex';
-            
-            // Adicionar som de game over (opcional)
-            tocarSomGameOver();
-        }
+    } else {
+        // Erro
+        errors++;
+        streak = 0;
         
-        function tocarSomGameOver() {
+        mostrarSimboloNoPentagrama('❌');
+        
+        // LIMITE DE ERROS FIXADO EM 5
+        if (errors >= 5) {
+            setTimeout(showGameOver, 1000);
+        } else {
+            setTimeout(() => {
+                nextNote();
+            }, 500);
+        }
+    }
+    
+    updateStats();
+    pararBarraProgresso();
+}
+        
+function handleTimeOut() {
+    // VERIFICAÇÃO ADICIONADA AQUI
+    if (errors >= 5) {
+        showGameOver();
+        return;
+    }
+    
+    gameActive = false;
+    errors++;
+    streak = 0;
+    total++;
+    
+    // LIMITE DE ERROS FIXADO EM 5
+    if (errors >= 5) {
+        setTimeout(showGameOver, 1000);
+    } else {
+        setTimeout(nextNote, 2000);
+    }
+    
+    updateStats();
+    pararBarraProgresso();
+}
+        
+function updateStats() {
+    document.getElementById('Acertos').textContent = score;
+    
+    // GARANTIR QUE APENAS 5 ERROS SÃO EXIBIDOS
+    for (let i = 1; i <= 5; i++) {
+        const erro = document.getElementById('erro' + i);
+        if (i <= Math.min(errors, 5)) { // <-- Adicionei Math.min aqui
+            erro.classList.remove('mostra-erro');
+        } else {
+            erro.classList.add('mostra-erro');
+        }
+    }
+}
+        
+function showGameOver() {
+    // GARANTIR QUE OS ERROS NÃO ULTRAPASSEM 5
+    if (errors > 5) {
+        errors = 5;
+    }
+    
+    gameOver = true;
+    clearInterval(timer);
+    
+    document.getElementById('finalScore').textContent = score;
+    document.getElementById('finalErrors').textContent = errors;
+    document.getElementById('finalTotal').textContent = total;
+    
+    // Mostrar a clave atual
+    const claveNomes = {
+        'SOL': 'Sol',
+        'FA': 'Fá',
+        'DO': 'Dó'
+    };
+    document.getElementById('finalClave').textContent = claveNomes[Clave];
+    
+    // Mostrar modo
+    const modoTexto = modoIniciante ? `Modo Iniciante (${nomesNiveis[nivelAtual]})` : 'Modo Normal';
+    document.getElementById('finalModo').textContent = modoTexto;
+    
+    // Mostrar modal com efeito
+    document.getElementById('gameOverModal').style.display = 'flex';
+    
+    // Adicionar som de game over (opcional)
+    tocarSomGameOver();
+}
+
+function tocarSomGameOver() {
             if (!soundEnabled || !audioContext) return;
             
             try {
@@ -1444,23 +1653,41 @@
             }
         }
         
-        function restartGame() {
-            score = 0;
-            errors = 0;
-            total = 0;
-            streak = 0;
-            gameOver = false;
-            
-            for (let i = 1; i <= 5; i++) {
-                document.getElementById('erro' + i).classList.add('mostra-erro');
-            }
+function restartGame() {
+    score = 0;
+    errors = 0; // <-- Garantir que começa com 0 erros
+    total = 0;
+    streak = 0;
+    gameOver = false;
+    
+    for (let i = 1; i <= 5; i++) {
+        document.getElementById('erro' + i).classList.add('mostra-erro');
+    }
 
-            closeModal();
-            updateStats();
-            nextNote();
-        }
+    closeModal();
+    updateStats();
+    
+    // Se for modo iniciante, mostrar tutorial inicial
+    if (modoIniciante) {
+        // Resetar sequência
+        iniciarNivelIniciante('linhas');
         
-        function closeModal() {
+        // Mostrar tutorial inicial
+        setTimeout(() => {
+            mostrarModalTutorial("🎓 Vamos Aprender!", 
+                "Vamos aprender as notas que aparecem nas <strong>LINHAS</strong> do pentagrama!<br><br>" +
+                "Clique em 'Vamos lá!' para começar.");
+        }, 300);
+        
+        // Mostrar pentagrama vazio
+        createNotation(null, false);
+    } else {
+        // Modo normal: começar imediatamente
+        nextNote();
+    }
+}
+
+function closeModal() {
             document.getElementById('gameOverModal').style.display = 'none';
         }
         
@@ -1541,67 +1768,80 @@
             progressBar.className = 'progress-bar';
         }
         
-        function pesquisarFrequencia(nota) {
-            const indice = escala.findIndex(item => item[0] === nota);
-            let voltaFrequencia = 0;
-            if (Clave === "FA") {
-                voltaFrequencia = 5;
-            } else if (Clave === "DO") {
-                voltaFrequencia = 6;
-            }
-            const encontrado = escala[indice - voltaFrequencia];
-            return encontrado ? encontrado[1] : null;
-        }
+function pesquisarFrequencia(nota) {
+    const indice = escala.findIndex(item => item[0] === nota);
+    let voltaFrequencia = 0;
+    if (Clave === "FA") {
+        voltaFrequencia = 5;
+    } else if (Clave === "DO") {
+        voltaFrequencia = 6;
+    }
 
-        function MudaClave(claveTemp) {
-            // Remover classe ativa de todos os botões
-            document.getElementById('claveSOL').style.display = "block";
-            document.getElementById('claveFA').style.display = "block";
-            document.getElementById('claveDO').style.display = "block";
-            // Adicionar classe ativa ao botão clicado
-            document.getElementById(claveTemp).style.display = "none";
-            
-            // Mudar a clave
-            Clave = claveTemp.replace("clave","");
-            
-            // Recriar a nota atual com a nova clave
-            if (currentNote) {
-                if (modoIniciante && notaEscolhida) {
-                    createNotation(notaEscolhida);
-                } else {
-                    const octaves = notasPorClave[Clave][currentNote];
-                    const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
-                    createNotation(selectedOctave);
-                }
-            }
+    // Verificar se é hora de mostrar tutorial
+    verificarTutorial(indiceSequencia);
+
+    document.getElementById('nomeNota').textContent = "";
+    const encontrado = escala[indice - voltaFrequencia];
+    
+    if (modoIniciante && encontrado) {
+        if (mostrarNomeNota) {
+            const notaAtual = noteNames[encontrado[0].substring(0, 1)];
+            document.getElementById('nomeNota').textContent = notaAtual;
+            posicionarSobreNota(indice);
         }
+    }
+
+    return encontrado ? encontrado[1] : null;
+}
         
         // Funções do modo iniciante
-        function toggleModoIniciante(ativado) {
-            modoIniciante = ativado;
-            //TEMPO_RESPOSTA = 20;
-            const niveisContainer = document.getElementById('niveisContainer');
-            
-            if (niveisContainer) {
-                niveisContainer.style.display = ativado ? 'block' : 'none';
-            }
-            
-            if (ativado) {
-                // Iniciar com nível 1 (linhas)
-                iniciarNivelIniciante('linhas');
-                atualizarBotoesNivel();
-                
-                // Resetar jogo
-                restartGame();
-                // Mostrar mensagem
-                showToast('🎓 Modo Iniciante ativado! Começando com exercício de LINHAS.');
-            } else {
-                // Voltar ao modo normal
-                showToast('🎵 Modo normal ativado.');
-                restartGame();
-            }
+function toggleModoIniciante(ativado) {
+    modoIniciante = ativado;
+    
+    // Resetar variáveis do tutorial
+    mostrarNomeNota = true;
+    tutorialAtivo = false;
+    
+    const niveisContainer = document.getElementById('niveisContainer');
+    
+    if (niveisContainer) {
+        niveisContainer.style.display = ativado ? 'block' : 'none';
+    }
+    
+    if (ativado) {
+        // Iniciar com nível 1 (linhas) mas NÃO mostrar tutorial ainda
+        iniciarNivelIniciante('linhas');
+        atualizarBotoesNivel();
+        
+        // Mostrar primeiro tutorial após selecionar o modo
+        setTimeout(() => {
+            mostrarModalTutorial("🎓 Vamos Aprender!", 
+                "Vamos aprender as notas que aparecem nas <strong>LINHAS</strong> do pentagrama!<br><br>" +
+                "Clique em 'Vamos lá!' para começar.");
+        }, 300);
+        
+        // Resetar jogo mas NÃO chamar nextNote() ainda
+        score = 0;
+        errors = 0;
+        total = 0;
+        streak = 0;
+        gameOver = false;
+        
+        for (let i = 1; i <= 5; i++) {
+            document.getElementById('erro' + i).classList.add('mostra-erro');
         }
         
+        updateStats();
+        
+        // Mostrar pentagrama vazio
+        createNotation(null, false);
+        
+    } else {
+        // Voltar ao modo normal
+        showToast('🎵 Modo normal ativado.');
+        restartGame();
+    }
+}        
         function iniciarNivelIniciante(nivel) {
             nivelAtual = nivel;
             // Pegar todas as notas do nível
@@ -1611,7 +1851,7 @@
             
             // Definir sequência atual
             sequenciaAtual = todasNotas;
-            indiceSequencia = 0;
+            indiceSequencia = 258; //aqui
 
             console.log(`Nível: ${nivel}, Total de notas: ${sequenciaAtual.length}`);
         }
@@ -1737,6 +1977,124 @@
                 toast.style.display = 'none';
             }, 3000);
         }
+
+function posicionarSobreNota(indice) {
+    const container = document.getElementById('notation');
+    const nomeNotaDiv = document.getElementById('nomeNota');
+    
+    // Método 1: Usando getBoundingClientRect() + scroll
+    const rect = container.getBoundingClientRect();
+    
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // Coordenadas absolutas da página
+    const absoluteLeft = rect.left + scrollLeft;
+    const absoluteTop = rect.top + scrollTop;
+    
+    // Posição aproximada onde a nota aparece (ajuste conforme necessário)
+    const x = absoluteLeft + (rect.width * 0.4); // 60% da largura (notas geralmente ficam à direita)
+    const y = absoluteTop + (rect.height * (((escala.length - indice) * 0.039) + 0.18)); // 30% da altura aqui
+    //alert(escala.length + " " + indice + " - " + (((escala.length - indice) * 0.04) + 0.18))
+    nomeNotaDiv.style.position = 'absolute';
+    nomeNotaDiv.style.left = `${x}px`;
+    nomeNotaDiv.style.top = `${y}px`;
+    nomeNotaDiv.style.display = 'block';
+    //((escala.length - indice) * 0.051)
+    console.log("Posicionado em:", { x, y, rect });
+}
+
+function verificarTutorial(indiceAtual) {
+    // Ignorar índice 0 (já foi tratado no início)
+    if (indiceAtual === 0) return;
+    const pontoTutorial = pontosTutorial[indiceAtual];
+    
+    if (pontoTutorial) {
+
+        if (pontoTutorial.tipo === "toast") {
+            // Mostrar toast rápido
+            showAgoraComVoceToast(pontoTutorial.mensagem);
+        } else {
+            // Mostrar modal de tutorial completo
+            mostrarModalTutorial(pontoTutorial.titulo, pontoTutorial.mensagem);
+            
+            // Atualizar se deve mostrar nome da nota
+            if (pontoTutorial.mostrarNomeNota !== undefined) {
+                mostrarNomeNota = pontoTutorial.mostrarNomeNota;
+            }
+        }
+    }
+}
+
+// Adicione estas funções para controlar o tutorial:
+function mostrarModalTutorial(titulo, mensagem) {
+    tutorialAtivo = true;
+    document.getElementById('tutorialTitle').innerHTML = titulo;
+    document.getElementById('tutorialMessage').innerHTML = mensagem;
+    document.getElementById('tutorialModal').style.display = 'flex';
+    
+    // Pausar o jogo
+    clearInterval(timer);
+    pararBarraProgresso();
+}
+
+function closeTutorial() {
+    tutorialAtivo = false;
+    document.getElementById('tutorialModal').style.display = 'none';
+    
+    // Se for o primeiro tutorial, iniciar o jogo
+    if (modoIniciante && indiceSequencia === 0) {
+        // Começar o jogo após fechar o tutorial
+        setTimeout(() => {
+            // Resetar timer para começar
+            timeLeft = TEMPO_RESPOSTA;
+            gameActive = true;
+            
+            // Gerar a primeira nota
+            notaEscolhida = sequenciaAtual[indiceSequencia];
+            indiceSequencia = (indiceSequencia + 1) % sequenciaAtual.length;
+            currentNote = mapaNotasParaLetras[notaEscolhida] || 'C';
+            
+            // Criar notação com a nota específica
+            createNotation(notaEscolhida);
+            
+            // Tocar som da nota (se habilitado)
+            if (soundEnabled) {
+                let frequencia = pesquisarFrequencia(notaEscolhida.toUpperCase().replace("/", ""));
+                if (frequencia) tocarNota(frequencia);
+            }
+
+            resetarBarraProgresso();
+            iniciarBarraProgresso();
+
+            // Iniciar contagem
+            timer = setInterval(updateTimer, 1000);
+        }, 500);
+    } else {
+        // Retomar o jogo normal
+        if (gameActive && !gameOver) {
+            iniciarBarraProgresso();
+            timer = setInterval(updateTimer, 1000);
+        }
+    }
+}
+
+function showAgoraComVoceToast(mensagem) {
+    const toast = document.getElementById('agoraComVoceToast');
+    toast.textContent = mensagem;
+    toast.style.display = 'block';
+    
+    // Esconder o toast após 2 segundos
+    setTimeout(() => {
+        toast.style.display = 'none';
+    }, 5000);
+    
+    // Desativar mostrar nome da nota quando for "Agora é com você"
+    if (mensagem.includes("Agora é com você")) {
+        mostrarNomeNota = false;
+    }
+}
+
     </script>
 </body>
 </html>
