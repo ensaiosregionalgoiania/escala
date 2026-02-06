@@ -2147,6 +2147,111 @@ function showAgoraComVoceToast(mensagem) {
     }
 }
 
+function MudaClave(botaoId) {
+    if (gameOver || tutorialAtivo) return;
+    
+    // Remover classe ativa de todos os botões de clave
+    const botoesClave = ['claveSOL', 'claveFA', 'claveDO'];
+    botoesClave.forEach(id => {
+        const btn = document.getElementById(id);
+        btn.classList.remove('clave-active');
+    });
+    
+    // Ativar o botão clicado
+    const botaoClicado = document.getElementById(botaoId);
+    botaoClicado.classList.add('clave-active');
+    
+    // Atualizar a clave baseada no botão clicado
+    switch(botaoId) {
+        case 'claveSOL':
+            Clave = "SOL";
+            break;
+        case 'claveFA':
+            Clave = "FA";
+            break;
+        case 'claveDO':
+            Clave = "DO";
+            break;
+    }
+    
+    // Tocar um som de confirmação
+    if (soundEnabled) {
+        tocarSomMudancaClave();
+    }
+    
+    // Atualizar a notação atual se houver uma nota sendo mostrada
+    if (currentNote && notaEscolhida) {
+        if (modoIniciante) {
+            // No modo iniciante, manter a mesma nota mas na nova clave
+            createNotation(notaEscolhida);
+        } else {
+            // No modo normal, gerar nova nota na nova clave
+            const octaves = notasPorClave[Clave][currentNote];
+            const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
+            createNotation(selectedOctave);
+            notaEscolhida = selectedOctave;
+        }
+        
+        // Reposicionar nome da nota se estiver visível
+        if (modoIniciante && mostrarNomeNota) {
+            const indice = escala.findIndex(item => item[0] === notaEscolhida.toUpperCase().replace("/", ""));
+            if (indice !== -1) {
+                const notaAtual = noteNames[escala[indice][0].substring(0, 1)];
+                document.getElementById('nomeNota').textContent = notaAtual;
+                posicionarSobreNota(indice);
+            }
+        }
+    }
+    
+    // Mostrar mensagem informativa
+    const claveNomes = {
+        'SOL': 'Sol',
+        'FA': 'Fá', 
+        'DO': 'Dó'
+    };
+    
+    showToast(`🗝️ Clave alterada para ${claveNomes[Clave]}`);
+}
+
+function tocarSomMudancaClave() {
+    if (!soundEnabled || !audioContext) return;
+    
+    try {
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        // Som diferente para cada clave
+        let frequencia = 440; // Lá padrão para clave de Sol
+        
+        switch(Clave) {
+            case 'FA':
+                frequencia = 220; // Lá mais grave para clave de Fá
+                break;
+            case 'DO':
+                frequencia = 330; // Mi para clave de Dó
+                break;
+        }
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequencia, audioContext.currentTime);
+        
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.3);
+    } catch (e) {
+        console.log("Erro ao tocar som de mudança de clave");
+    }
+}
     </script>
 </body>
 </html>
