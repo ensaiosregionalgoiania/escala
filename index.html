@@ -613,11 +613,52 @@
     background: white;
     border-radius: 20px;
     padding: 30px;
-    width: 90%;
-    max-width: 400px;
+    width: 95%; /* Usa mais espaço */
+    max-width: min(550px, 90vw); /* Limita mas usa viewport */
+    max-height: 85vh; /* Limita altura */
+    overflow-y: auto; /* Permite rolagem se necessário */
     text-align: center;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
     animation: slideUp 0.4s ease-out;
+}
+
+/* Para telas maiores */
+@media (min-width: 768px) {
+    .tutorial-content {
+        padding: 40px;
+        max-width: 600px;
+    }
+    
+    .tutorial-title {
+        font-size: 2.5em;
+    }
+    
+    .tutorial-message {
+        font-size: 1.4em;
+    }
+}
+
+/* Para telas muito pequenas */
+@media (max-width: 480px) {
+    .tutorial-content {
+        padding: 20px;
+        width: 92%;
+        max-height: 80vh;
+    }
+    
+    .tutorial-title {
+        font-size: 1.8em;
+    }
+    
+    .tutorial-message {
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+    
+    .tutorial-btn {
+        padding: 15px;
+        font-size: 1.1em;
+    }
 }
 
 .tutorial-title {
@@ -1038,7 +1079,8 @@ let tutorialAtivo = false;
 const pontosTutorial = {
     0: { // Antes da primeira nota (índice 0)
         titulo: "🎓 Vamos Aprender!",
-        mensagem: "Vamos aprender as notas que aparecem nas <strong>LINHAS</strong> do pentagrama!",
+        mensagem: "<img src='linhas.png' alt='Mi - Sol - Si - Re - Fa'>",
+        //"Vamos aprender as notas que aparecem nas <strong>LINHAS</strong> do pentagrama!",
         mostrarNomeNota: true
     },
     11: { // Antes da nota 11 (índice 10)
@@ -1817,8 +1859,12 @@ function toggleModoIniciante(ativado) {
         // Mostrar primeiro tutorial após selecionar o modo
         setTimeout(() => {
             mostrarModalTutorial("🎓 Vamos Aprender!", 
-                "Vamos aprender as notas que aparecem nas <strong>LINHAS</strong> do pentagrama!<br><br>" +
-                "Clique em 'Vamos lá!' para começar.");
+                "<img src='Linhas.png' alt='Mi Sol Si Re Fa' style='width:100%'><br>" +
+               "Vamos1111 aprender as notas que aparecem nas <strong>LINHAS</strong>.<br>" +
+               "Repita os nomes das notas <b>Mi Sol Si Ré Fá</b> repita até Decorar<br>" +
+               "<b>Mi Sol Si Ré Fá</b><br>" +
+               "<b>Mi Sol Si Ré Fá</b><br>" +
+               "Clique em 'Vamos lá!' para começar.");
         }, 300);
         
         // Resetar jogo mas NÃO chamar nextNote() ainda
