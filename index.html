@@ -2,107 +2,138 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <!-- Meta tags essenciais para PWA e tela cheia -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-   
-    <!-- Favicon padrão (para abas do navegador) -->
-    <link rel="icon" type="image/png" href="logo-192.png">
-    
-    <meta name="apple-mobile-web-app-title" content="Treino Musical">
-
-    <link rel="apple-touch-icon" href="logo-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Treino Musical">
+    <meta name="screen-orientation" content="landscape">
+    <meta name="x5-orientation" content="landscape">
+    
+    <!-- Favicon e ícones -->
+    <link rel="icon" type="image/png" href="logo-192.png">
+    <link rel="apple-touch-icon" href="logo-192.png">
     <link rel="manifest" href="manifest.json">
+    
     <title>🎵 Treino Musical</title>
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.4/build/cjs/vexflow.js"></script>
+    
     <style>
+        /* Reset e base */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
         }
         
-/* REMOVA TODO O CÓDIGO ANTERIOR DE ORIENTAÇÃO e COLOQUE ISTO: */
-
-/* Forçar conteúdo sempre na horizontal */
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-/* Container principal que será rotacionado */
-.rotated-content {
-    position: absolute;
-    width: 100vh;  /* Altura da tela vira largura */
-    height: 100vw; /* Largura da tela vira altura */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(90deg); /* Rotaciona 90 graus */
-    transform-origin: center center;
-    overflow: hidden;
-}
-
-/* Ajustes para quando o celular já está na horizontal */
-@media screen and (orientation: landscape) {
-    .rotated-content {
-        width: 100vw;
-        height: 100vh;
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-}
-
-/* Garantir que tudo dentro fique visível */
-body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}        
-
-
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
         
+        /* Container que força orientação horizontal */
+        .landscape-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        /* Conteúdo principal - sempre na horizontal */
+        .content {
+            position: absolute;
+            width: 100vh;  /* Usa a altura da tela como largura */
+            height: 100vw; /* Usa a largura da tela como altura */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg); /* Rotaciona 90° */
+            transform-origin: center center;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* Quando o celular já está na horizontal, não rotaciona */
+        @media screen and (orientation: landscape) {
+            .content {
+                width: 100vw;
+                height: 100vh;
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+        }
+        
+        /* Container do jogo (seu layout original) */
         .container {
             width: 100%;
-            max-width: 800px;
+            height: 100%;
             background: white;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             padding: 20px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        
-        h1 {
-            font-size: 1.8em;
-            color: #333;
-            margin-bottom: 5px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .subtitle {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
         }
         
         .game-area {
-            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            min-height: 0;
         }
         
+        /* Botões flutuantes (agora fixos na tela real) */
+        .fullscreen-btn, .sound-btn {
+            position: fixed;
+            z-index: 2000;
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            color: white;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+        
+        .fullscreen-btn {
+            top: 10px;
+            right: 10px;
+        }
+        
+        .sound-btn {
+            top: 70px;
+            right: 10px;
+            background: linear-gradient(45deg, #06D6A0, #06A678);
+        }
+        
+        .sound-btn.sound-off {
+            background: linear-gradient(45deg, #EF476F, #D43A5E);
+        }
+        
+        /* Ajuste dos botões quando em modo retrato */
+        @media screen and (orientation: portrait) {
+            .fullscreen-btn, .sound-btn {
+                transform: rotate(90deg);
+            }
+        }
+        
+        /* Pentagrama */
         .pentagrama-container {
             background: #f8f9fa;
             border: 2px solid #e0e0e0;
@@ -123,6 +154,16 @@ body {
             min-height: 85px;
         }
         
+        #claveSOL, #claveFA, #claveDO {
+            display: block;
+            cursor: pointer;
+            margin-top: 3%;
+            vertical-align: auto;
+            border: 1px solid #0a0321;
+            font-size: 60px;
+        }
+        
+        /* Timer e progresso */
         .timer-section {
             display: flex;
             align-items: center;
@@ -134,10 +175,10 @@ body {
         }
         
         .timer-box {
-            width: 80%; 
-            min-width: 100px; 
-            border: 1px solid #0a0321; 
-            display: flex; 
+            width: 80%;
+            min-width: 100px;
+            border: 1px solid #0a0321;
+            display: flex;
             box-sizing: border-box;
         }
         
@@ -149,6 +190,39 @@ body {
             line-height: 1;
         }
         
+        .progress-container {
+            width: 80%;
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 100%;
+            background: #4CAF50;
+            border-radius: 5px;
+            transition: width 1s linear;
+        }
+        
+        .progress-bar.warning {
+            background: #FF9800;
+        }
+        
+        .progress-bar.danger {
+            background: #F44336;
+            animation: pulse 0.5s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            from { opacity: 1; }
+            to { opacity: 0.7; }
+        }
+        
+        /* Grid de notas */
         .notes-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -176,146 +250,33 @@ body {
             transform: scale(0.95);
         }
         
-        .note-do { background: linear-gradient(45deg, #FF6B6B, #FF8E8E); }
+        .note-do, .note-sol { background: linear-gradient(45deg, #FF6B6B, #FF8E8E); }
         .note-re { background: linear-gradient(45deg, #4ECDC4, #44A08D); }
         .note-mi { background: linear-gradient(45deg, #FFD166, #FFB347); }
         .note-fa { background: linear-gradient(45deg, #06D6A0, #06A678); }
-        .note-sol { background: linear-gradient(45deg, #118AB2, #0A6C8F); }
         .note-la { background: linear-gradient(45deg, #EF476F, #D43A5E); }
         .note-si { background: linear-gradient(45deg, #9D4EDD, #7B2CBF); }
         
         .mostra-erro {
-            opacity: 0.5; 
-            filter: grayscale(100%)
-        }
-
-        /* Botão de tela cheia */
-        .fullscreen-btn {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.5em;
-            cursor: pointer;
-            z-index: 1001;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
+            opacity: 0.5;
+            filter: grayscale(100%);
         }
         
-        .fullscreen-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .fullscreen-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Botão de som */
-        .sound-btn {
-            position: fixed;
-            top: 70px;
-            right: 10px;
-            background: linear-gradient(45deg, #06D6A0, #06A678);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.5em;
-            cursor: pointer;
-            z-index: 1001;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-        
-        .sound-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .sound-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .sound-off {
-            background: linear-gradient(45deg, #EF476F, #D43A5E) !important;
-        }
-
-        /* ADICIONE ESTES ESTILOS */
-        .progress-container {
-            width: 80%;
-            height: 10px;
-            background: #f0f0f0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 8px;
-            border: 1px solid #ddd;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 80%;
-            background: #4CAF50;
-            border-radius: 5px;
-            transition: width 1s linear;
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-        }
-
-        .progress-bar.warning {
-            background: #FF9800;
-            box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
-        }
-
-        .progress-bar.danger {
-            background: #F44336;
-            box-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
-            animation: pulse 0.5s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from { opacity: 1; }
-            to { opacity: 0.7; }
-        }
-
-        /* Botões de clave ativos */
-        .clave-active {
-            //background: linear-gradient(45deg, #FFD166, #FFB347) !important;
-            //border: 3px solid #333 !important;
-            //transform: scale(1.05);
-            display: none
-        }
-        
-        /* Modal de Game Over */
-        .game-over-modal {
-            display: none;
+        /* Modais e toasts (fixos na tela real) */
+        .game-over-modal, .sound-activation-modal, .tutorial-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
+            z-index: 3000;
+            display: none;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.3s ease-out;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .game-over-content {
+        
+        .game-over-content, .sound-activation-content, .tutorial-content {
             background: white;
             border-radius: 20px;
             padding: 30px;
@@ -323,91 +284,8 @@ body {
             max-width: 400px;
             text-align: center;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.4s ease-out;
-            position: relative;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .game-over-title {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #EF476F;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .game-over-message {
-            font-size: 1.1em;
-            color: #666;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-
-        .game-over-stats {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 2px solid #e9ecef;
-        }
-
-        .modal-btn {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 10px;
-        }
-
-        .modal-btn:active {
-            transform: scale(0.98);
-        }
-
-        .restart-btn {
-            background: linear-gradient(45deg, #06D6A0, #06A678);
-            color: white;
-            box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3);
-        }
-
-        .restart-btn:hover {
-            background: linear-gradient(45deg, #05c090, #059068);
-        }
-
-        .close-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .close-btn:hover {
-            background: linear-gradient(45deg, #5a6fd8, #6a419f);
-        }
-
-        .share-btn {
-            background: linear-gradient(45deg, #3b5998, #4267B2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(59, 89, 152, 0.3);
-        }
-
-        .share-btn:hover {
-            background: linear-gradient(45deg, #344e86, #3b5998);
         }
         
-        /* Toast de compartilhamento */
         .toast {
             position: fixed;
             top: 20px;
@@ -417,420 +295,122 @@ body {
             color: white;
             padding: 15px 20px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 1002;
-            animation: slideDown 0.3s ease-out;
+            z-index: 4000;
             display: none;
         }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
-
-        /* Estilos para tela cheia */
-        :fullscreen .container {
-            border-radius: 0;
-            padding: 20px;
-            max-width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
         
-        :-webkit-full-screen .container {
-            border-radius: 0;
-            padding: 20px;
-            max-width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        :-moz-full-screen .container {
-            border-radius: 0;
-            padding: 20px;
-            max-width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        :fullscreen .game-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        
-        :-webkit-full-screen .game-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        
-        /* Ajustes para telas menores em modo paisagem */
+        /* Ajustes para telas pequenas */
         @media screen and (max-height: 600px) and (orientation: landscape) {
-            .container {
-                padding: 10px;
-            }
-            
-            .pentagrama-container {
-                min-height: 80px;
-                margin-bottom: 10px;
-            }
-            
-            .notes-grid {
-                gap: 8px;
-                margin-bottom: 10px;
-            }
-            
-            .note-btn {
-                height: 50px;
-                font-size: 1.1em;
-            }
-            
-            .timer-section {
-                margin-bottom: 10px;
-                padding: 8px;
-            }
+            .container { padding: 10px; }
+            .pentagrama-container { min-height: 80px; }
+            .note-btn { height: 50px; font-size: 1.1em; }
         }
         
-        /* Modal de ativação de som para iOS */
-        .sound-activation-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1002;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .sound-activation-content {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.4s ease-out;
-        }
-
-        .sound-activation-title {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .sound-activation-message {
-            font-size: 1.1em;
-            color: #666;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-
-        .game-over-modal .fullscreen-btn,
-        .game-over-modal .sound-btn {
-            display: none !important;
-        }
-        
-        /* Controles do modo iniciante */
-        .modo-iniciante-controls {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .nivel-buttons {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-            margin-top: 5px;
-        }
-        
-        .nivel-btn {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            background: #667eea;
-            color: white;
-            font-size: 0.8em;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .nivel-btn:hover {
-            background: #5a6fd8;
-        }
-        
-        .nivel-btn.active {
-            background: #4CAF50;
-            font-weight: bold;
-        }
-        
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 5px;
-        }
-        
-        .checkbox-container label {
-            font-size: 1em;
+        /* Posicionamento de elementos absolutos dentro do conteúdo rotacionado */
+        .content #nomeNota {
+            position: absolute;
+            z-index: 1000;
+            font-size: 24px;
             font-weight: bold;
             color: #333;
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
-
-/* Adicione este CSS na seção de estilos */
-.tutorial-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.3s ease-out;
-}
-
-.tutorial-content {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    width: 95%; /* Usa mais espaço */
-    max-width: min(550px, 90vw); /* Limita mas usa viewport */
-    max-height: 85vh; /* Limita altura */
-    overflow-y: auto; /* Permite rolagem se necessário */
-    text-align: center;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.4s ease-out;
-}
-
-/* Para telas maiores */
-@media (min-width: 768px) {
-    .tutorial-content {
-        padding: 40px;
-        max-width: 600px;
-    }
-    
-    .tutorial-title {
-        font-size: 2.5em;
-    }
-    
-    .tutorial-message {
-        font-size: 1.4em;
-    }
-}
-
-/* Para telas muito pequenas */
-@media (max-width: 480px) {
-    .tutorial-content {
-        padding: 20px;
-        width: 92%;
-        max-height: 80vh;
-    }
-    
-    .tutorial-title {
-        font-size: 1.8em;
-    }
-    
-    .tutorial-message {
-        font-size: 1.1em;
-        margin-bottom: 20px;
-    }
-    
-    .tutorial-btn {
-        padding: 15px;
-        font-size: 1.1em;
-    }
-}
-
-.tutorial-title {
-    font-size: 1.8em;
-    font-weight: bold;
-    color: #667eea;
-    margin-bottom: 15px;
-}
-
-.tutorial-message {
-    font-size: 1.1em;
-    color: #666;
-    margin-bottom: 25px;
-    line-height: 1.5;
-}
-
-.tutorial-btn {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: linear-gradient(45deg, #06D6A0, #06A678);
-    color: white;
-    box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3);
-}
-
-.tutorial-btn:hover {
-    background: linear-gradient(45deg, #05c090, #059068);
-}
-
-.tutorial-btn:active {
-    transform: scale(0.98);
-}
-
-/* Estilo para botão de pausa quando ativo */
-.pause-active {
-    background: linear-gradient(45deg, #FFD166, #FFB347) !important;
-    border: 3px solid #333 !important;
-    transform: scale(1.05);
-}
-
-/* Ajustar botões flutuantes para a rotação */
-.fullscreen-btn, .sound-btn {
-    position: fixed;
-    z-index: 1001;
-    /* Manter na posição correta independente da rotação */
-}
-
-.fullscreen-btn {
-    top: 10px;
-    right: 10px;
-}
-
-.sound-btn {
-    top: 70px;
-    right: 10px;
-}
-
-/* Quando em modo retrato (conteúdo rotacionado), ajustar botões */
-@media screen and (orientation: portrait) {
-    .fullscreen-btn, .sound-btn {
-        transform: rotate(90deg); /* Rotacionar botões de volta ao normal */
-        transform-origin: center center;
-    }
-    
-    .fullscreen-btn {
-        top: 10px;
-        right: 10px;
-    }
-    
-    .sound-btn {
-        top: 70px;
-        right: 10px;
-    }
-}
-
-</style>
-
-
+        
+        .content .modo-iniciante-controls {
+            position: absolute;
+            top: 8%;
+            left: 55%;
+            width: 40%;
+        }
+        
+        /* Pause active */
+        .pause-active {
+            background: linear-gradient(45deg, #FFD166, #FFB347) !important;
+            border: 3px solid #333 !important;
+            transform: scale(1.05);
+        }
+    </style>
 </head>
-
 <body>
-    <!-- Botão de tela cheia -->
-    <button class="fullscreen-btn" id="fullscreenBtn" title="Tela Cheia">
-        ⛶
-    </button>
+    <!-- Botões flutuantes (sempre na tela real) -->
+    <button class="fullscreen-btn" id="fullscreenBtn" title="Tela Cheia">⛶</button>
+    <button class="sound-btn" id="soundBtn" title="Ativar/Desativar Som">🔊</button>
     
-    <!-- Botão de som -->
-    <button class="sound-btn" id="soundBtn" title="Ativar/Desativar Som">
-        🔊
-    </button>
-    <div class="rotated-content">
-        <div class="container">
-            <div class="game-area">
-                <div class="pentagrama-container" style="gap: 2%;">
-                    <div id="claveSOL" style="display: none; cursor: pointer;margin-top: 3%; vertical-align: auto; border: 1px solid #0a0321; font-size: 60px" onclick="MudaClave(this.id)">𝄞</div>
-                    <div id="claveFA" style="display: block; cursor: pointer;margin-top: 3%; vertical-align: auto; border: 1px solid #0a0321; font-size: 60px" onclick="MudaClave(this.id)">𝄢</div>
-                    <div id="claveDO" style="display: block; cursor: pointer;margin-top: 3%; vertical-align: auto; border: 1px solid #0a0321; font-size: 60px" onclick="MudaClave(this.id)">𝄡</div>
-                    <div id="notation"></div>
-                </div>
-                
-                <div style="position: absolute; top:8%; left:30%; text-align: left; width: 20%;">
-                    <div class="progress-container" style="top: 50%; width: 100%; border: 1px solid #0a0321;">
-                        <div id="progressBar" class="progress-bar" style="width: 100%;"></div>
+    <!-- Container que força orientação horizontal -->
+    <div class="landscape-container">
+        <div class="content">
+            <!-- TODO O CONTEÚDO DO JOGO DENTRO DA DIV ROTACIONADA -->
+            <div class="container">
+                <div class="game-area">
+                    <div class="pentagrama-container" style="gap: 2%;">
+                        <div id="claveSOL" style="display: none;" onclick="MudaClave(this.id)">𝄞</div>
+                        <div id="claveFA" style="display: block;" onclick="MudaClave(this.id)">𝄢</div>
+                        <div id="claveDO" style="display: block;" onclick="MudaClave(this.id)">𝄡</div>
+                        <div id="notation"></div>
                     </div>
-                </div>
-                <div style="position: absolute; top:5%; left:4%; text-align: left;">
-                    <div style="font-size: 1.2em; font-weight: bold;">Pontos:
-                        <span id="Acertos"><b>0</b></span>
-                    </div>
-                </div>
-                <div style="position: absolute; top:5%; left:70%; text-align: left;">
-                    <div style="font-size: 1.2em; font-weight: bold;">Erros: 
-                        <span id="erro1" class="mostra-erro">❌</span>
-                        <span id="erro2" class="mostra-erro">❌</span>
-                        <span id="erro3" class="mostra-erro">❌</span>
-                        <span id="erro4" class="mostra-erro">❌</span>
-                        <span id="erro5" class="mostra-erro">❌</span>
-                    </div>
-                </div>
-                
-                <!-- Controles do modo iniciante -->
-                <div style="position: absolute; top:8%; left:55%; text-align: left; width: 40%;">
-                    <div class="modo-iniciante-controls">
-                        <div class="checkbox-container">
-                            <input type="checkbox" id="modoIniciante" onchange="toggleModoIniciante(this.checked)" style="transform: scale(1.2);">
-                            <label for="modoIniciante">🎓 Modo Iniciante</label>
+                    
+                    <div style="position: absolute; top:8%; left:30%; text-align: left; width: 20%;">
+                        <div class="progress-container" style="top: 50%; width: 100%; border: 1px solid #0a0321;">
+                            <div id="progressBar" class="progress-bar" style="width: 100%;"></div>
                         </div>
                     </div>
-                </div>                    
-                
-                <div class="notes-grid">
-                    <button class="note-btn note-sol" onclick="checkAnswer('C')">Dó</button>
-                    <button class="note-btn note-sol" onclick="checkAnswer('D')">Ré</button>
-                    <button class="note-btn note-sol" onclick="checkAnswer('E')">Mi</button>
-                    <button class="note-btn note-sol" onclick="checkAnswer('F')">Fá</button>
-                    <button class="note-btn note-sol" onclick="checkAnswer('G')">Sol</button>
-                    <button class="note-btn note-sol" onclick="checkAnswer('A')">Lá</button>
-                    <button class="note-btn note-sol" onclick="checkAnswer('B')">Si</button>
-                </div>
-
-                <div class="timer-box" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 50%; border: 1px solid #0a0321;">
-                    <!--<button class="note-btn note-mi clave-active" id="claveSOL" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄞</button>
-                    <button class="note-btn note-mi" id="claveFA" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢</button>
-                    <button class="note-btn note-mi" id="claveDO" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄡</button>-->
-                    <button class="note-btn note-la" id="pauseBtn" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="togglePause()">⏸️</button>
-                    <button class="note-btn note-la" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="showGameOver();">⏹️</button>
+                    
+                    <div style="position: absolute; top:5%; left:4%; text-align: left;">
+                        <div style="font-size: 1.2em; font-weight: bold;">Pontos:
+                            <span id="Acertos"><b>0</b></span>
+                        </div>
+                    </div>
+                    
+                    <div style="position: absolute; top:5%; left:70%; text-align: left;">
+                        <div style="font-size: 1.2em; font-weight: bold;">Erros: 
+                            <span id="erro1" class="mostra-erro">❌</span>
+                            <span id="erro2" class="mostra-erro">❌</span>
+                            <span id="erro3" class="mostra-erro">❌</span>
+                            <span id="erro4" class="mostra-erro">❌</span>
+                            <span id="erro5" class="mostra-erro">❌</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Controles do modo iniciante -->
+                    <div style="position: absolute; top:8%; left:55%; text-align: left; width: 40%;">
+                        <div class="modo-iniciante-controls">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="modoIniciante" onchange="toggleModoIniciante(this.checked)" style="transform: scale(1.2);">
+                                <label for="modoIniciante">🎓 Modo Iniciante</label>
+                            </div>
+                        </div>
+                    </div>                    
+                    
+                    <div class="notes-grid">
+                        <button class="note-btn note-sol" onclick="checkAnswer('C')">Dó</button>
+                        <button class="note-btn note-sol" onclick="checkAnswer('D')">Ré</button>
+                        <button class="note-btn note-sol" onclick="checkAnswer('E')">Mi</button>
+                        <button class="note-btn note-sol" onclick="checkAnswer('F')">Fá</button>
+                        <button class="note-btn note-sol" onclick="checkAnswer('G')">Sol</button>
+                        <button class="note-btn note-sol" onclick="checkAnswer('A')">Lá</button>
+                        <button class="note-btn note-sol" onclick="checkAnswer('B')">Si</button>
+                    </div>
+        
+                    <div class="timer-box" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 50%; border: 1px solid #0a0321;">
+                        <button class="note-btn note-la" id="pauseBtn" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="togglePause()">⏸️</button>
+                        <button class="note-btn note-la" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="showGameOver();">⏹️</button>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Elemento para mostrar nome da nota -->
+            <div id="nomeNota" style="display: none;">Nota</div>
         </div>
     </div>
     
-    <!-- Modal de Game Over -->
+    <!-- Modais e toasts (fora da div rotacionada) -->
     <div class="game-over-modal" id="gameOverModal">
         <div class="game-over-content">
             <div class="game-over-title">💀 GAME OVER!</div>
-            <div class="game-over-message">
-                Você atingiu 5 erros!<br>
-                Precisa praticar mais!
-            </div>
-            
+            <div class="game-over-message">Você atingiu 5 erros! Precisa praticar mais!</div>
             <div class="game-over-stats">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div style="text-align: center;">
@@ -842,74 +422,39 @@ body {
                         <div style="font-size: 1.8em; font-weight: bold; color: #EF476F;" id="finalErrors">0</div>
                     </div>
                 </div>
-                <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
-                    Total de notas: <span style="font-weight: bold;" id="finalTotal">0</span><br>
-                    Clave: <span style="font-weight: bold;" id="finalClave">Sol</span><br>
-                    <span id="finalModo">Modo: Normal</span>
-                </div>
-                <div style="margin-top: 10px; padding: 10px; background: #fff; border-radius: 10px; border: 1px dashed #ddd;">
-                    <div style="font-size: 0.8em; color: #888;">Compartilhe seu resultado!</div>
-                </div>
             </div>
-            
-            <button class="modal-btn restart-btn" onclick="restartGame()">
-                🔄 Jogar Novamente
-            </button>
-            <button class="modal-btn share-btn" onclick="shareResults()">
-                📤 Compartilhar Resultado
-            </button>
-            <button class="modal-btn close-btn" onclick="closeModal()">
-                ✕ Fechar
-            </button>
+            <button class="modal-btn restart-btn" onclick="restartGame()">🔄 Jogar Novamente</button>
+            <button class="modal-btn share-btn" onclick="shareResults()">📤 Compartilhar</button>
+            <button class="modal-btn close-btn" onclick="closeModal()">✕ Fechar</button>
         </div>
     </div>
-
-    <!-- Modal de ativação de som para iOS -->
+    
     <div class="sound-activation-modal" id="soundActivationModal">
         <div class="sound-activation-content">
             <div class="sound-activation-title">🔊 Ativar Som</div>
             <div class="sound-activation-message">
                 Para o som funcionar no iPhone/iPad:<br><br>
-                1. Certifique-se que o botão de silêncio não está ativado<br>
-                2. Aumente o volume do dispositivo<br>
-                3. Clique no botão abaixo para ativar o som
+                1. Aumente o volume do dispositivo<br>
+                2. Clique no botão abaixo
             </div>
-            <button class="modal-btn restart-btn" onclick="activateSound()">
-                ✅ Ativar Som Agora
-            </button>
-            <button class="modal-btn close-btn" onclick="skipSoundActivation()">
-                Pular (Sem Som)
-            </button>
+            <button class="modal-btn restart-btn" onclick="activateSound()">✅ Ativar Som</button>
+            <button class="modal-btn close-btn" onclick="skipSoundActivation()">Pular</button>
         </div>
     </div>
-
-    <!-- Toast de compartilhamento -->
-    <div class="toast" id="shareToast">
-        Resultado copiado para a área de transferência! 📋
-    </div>
-
-            <div id="nomeNota" style="z-index: 1000 !important; position: absolute; top:20%; left:30%; text-align: left; width: 20%;">Nota</div>
-
-<!-- Modal de Tutorial -->
-<div class="tutorial-modal" id="tutorialModal">
-    <div class="tutorial-content">
-        <div class="tutorial-title" id="tutorialTitle">🎓 Vamos Aprender!</div>
-        <div class="tutorial-message" id="tutorialMessage">
-            Vamos aprender as notas que aparecem nas linhas!
+    
+    <div class="tutorial-modal" id="tutorialModal">
+        <div class="tutorial-content">
+            <div class="tutorial-title" id="tutorialTitle">🎓 Vamos Aprender!</div>
+            <div class="tutorial-message" id="tutorialMessage"></div>
+            <button class="tutorial-btn" onclick="closeTutorial()">✅ Vamos lá!</button>
         </div>
-        <button class="tutorial-btn" onclick="closeTutorial()">
-            ✅ Vamos lá!
-        </button>
     </div>
-</div>
-
-<!-- Toast para "Agora é com você" -->
-<div class="toast" id="agoraComVoceToast" style="background: #FF9800;">
-    Agora é com você! 👊
-</div>
-
+    
+    <div class="toast" id="shareToast">Resultado copiado!</div>
+    <div class="toast" id="agoraComVoceToast" style="background: #FF9800;">Agora é com você! 👊</div>
+    
     <script>
-        // Variáveis do jogo
+        // ==================== CONFIGURAÇÕES INICIAIS ====================
         const TEMPO_RESPOSTA = 10;
         let currentNote = null;
         let score = 0;
@@ -920,301 +465,58 @@ body {
         let timeLeft = TEMPO_RESPOSTA;
         let gameActive = false;
         let gameOver = false;
-        let Clave = "SOL"; // Clave padrão
+        let Clave = "SOL";
         let isFullscreen = false;
         let soundEnabled = true;
         let audioContext = null;
         let soundActivated = false;
-        
-        // Variáveis do modo iniciante
         let modoIniciante = false;
         let sequenciaAtual = [];
         let indiceSequencia = 0;
         let nivelAtual = 'linhas';
         let notaEscolhida = '';
-let mostrarNomeNota = true;
-let tutorialAtivo = false;
-let gamePaused = false;
-let pauseStartTime = 0;
-let remainingPauseTime = 0;
-let pauseReason = ''; // 'user' ou 'tutorial'
-let posTutorial = false;
+        let mostrarNomeNota = true;
+        let tutorialAtivo = false;
+        let gamePaused = false;
+        let pauseStartTime = 0;
+        let pauseReason = '';
+        let progressInterval = null;
         
-        // Mapeamento de notas para cada clave
+        // ==================== MAPEAMENTO DE NOTAS ====================
         const notasPorClave = {
-            'SOL': { // Clave de Sol
-                'C': ['c/4', 'c/5', 'c/6'],
-                'D': ['d/4', 'd/5', 'd/6'],
-                'E': ['e/4', 'e/5'],
-                'F': ['f/4', 'f/5'],
-                'G': ['g/4', 'g/5'],
-                'A': ['a/4', 'a/5'],
-                'B': ['b/3', 'b/4']
-            },
-            'FA': { // Clave de Fá
-                'C': ['c/4', 'c/5'],
-                'D': ['d/4', 'd/5'],
-                'E': ['e/4', 'e/5'],
-                'F': ['f/4', 'f/5'],
-                'G': ['g/4', 'g/5'],
-                'A': ['a/4', 'a/5'],
-                'B': ['b/3', 'b/4']
-            },
-            'DO': { // Clave de Dó (na 3ª linha)
-                'C': ['c/4', 'c/5'],
-                'D': ['d/4', 'd/5'],
-                'E': ['e/4', 'e/5'],
-                'F': ['f/4', 'f/5'],
-                'G': ['g/4', 'g/5'],
-                'A': ['a/4', 'a/5'],
-                'B': ['b/4', 'b/5']
-            }
+            'SOL': { 'C': ['c/4','c/5','c/6'], 'D': ['d/4','d/5','d/6'], 'E': ['e/4','e/5'], 'F': ['f/4','f/5'], 'G': ['g/4','g/5'], 'A': ['a/4','a/5'], 'B': ['b/3','b/4'] },
+            'FA': { 'C': ['c/4','c/5'], 'D': ['d/4','d/5'], 'E': ['e/4','e/5'], 'F': ['f/4','f/5'], 'G': ['g/4','g/5'], 'A': ['a/4','a/5'], 'B': ['b/3','b/4'] },
+            'DO': { 'C': ['c/4','c/5'], 'D': ['d/4','d/5'], 'E': ['e/4','e/5'], 'F': ['f/4','f/5'], 'G': ['g/4','g/5'], 'A': ['a/4','a/5'], 'B': ['b/4','b/5'] }
         };
-
-        const noteNames = {
-            'C': 'Dó',
-            'D': 'Ré',
-            'E': 'Mi',
-            'F': 'Fá',
-            'G': 'Sol',
-            'A': 'Lá',
-            'B': 'Si'
-        };
+        
+        const noteNames = { 'C': 'Dó', 'D': 'Ré', 'E': 'Mi', 'F': 'Fá', 'G': 'Sol', 'A': 'Lá', 'B': 'Si' };
         
         const escala = [
-            ["B2", 123.47], //162
-            ["C3", 130.81], //157
-            ["D3", 146.83], //152
-            ["E3", 164.81], //147
-            ["F3", 174.61], //142
-            ["G3", 196.00], //137
-            ["A3", 220.00], //132
-            ["B3", 246.94], //127 - 0.85
-            ["C4", 261.63], //122 - 0.81
-            ["D4", 293.66], //117 - 0.77
-            ["E4", 329.63], //112 - 0.73
-            ["F4", 349.23], //107 - 0.68
-            ["G4", 392.00], //102 - 0.64
-            ["A4", 440.00], //97  - 0.59
-            ["B4", 493.88], //92  - 0.56
-            ["C5", 523.25], //87  - 0.52
-            ["D5", 587.33], //82  - 0.48
-            ["E5", 659.25], //77  - 0.43
-            ["F5", 698.46], //72  - 0.39
-            ["G5", 783.99], //67  - 0.35
-            ["A5", 880.00], //62  - 0.31
-            ["B5", 987.77], //52  - 0.27
-            ["C6", 1046.50], //47 - 0.22
-            ["D6", 1174.66] //42  - 0.18
+            ["B2",123.47],["C3",130.81],["D3",146.83],["E3",164.81],["F3",174.61],["G3",196.00],["A3",220.00],
+            ["B3",246.94],["C4",261.63],["D4",293.66],["E4",329.63],["F4",349.23],["G4",392.00],["A4",440.00],
+            ["B4",493.88],["C5",523.25],["D5",587.33],["E5",659.25],["F5",698.46],["G5",783.99],["A5",880.00],
+            ["B5",987.77],["C6",1046.50],["D6",1174.66]
         ];
         
-        // Banco de sequências para modo iniciante
-        const sequenciasIniciante = {
-            // Nível 1: Linhas (5 notas)
-            linhas: [
-                //Linhas - Mostra nome da Nota
-                // 01
-                'e/4',// 'g/4', 'b/4', 'd/5', 'f/5','e/4', 'g/4', 'b/4', 'd/5', 'f/5',
-                //Linhas - Nao mostra da Nota
-                // 11
-                'e/4',// 'g/4', 'b/4', 'd/5', 'f/5','e/4', 'g/4', 'b/4', 'd/5', 'f/5',
-                //Linhas - randomico
-                'd/5',// 'b/4', 'e/4', 'f/5', 'g/4', 'b/4', 'd/5', 'f/5', 'e/4', 'g/4',
-                'g/4',// 'f/5', 'e/4', 'd/5', 'b/4', 'g/4', 'b/4', 'f/5', 'e/4', 'd/5',
-                'b/4',// 'e/4', 'g/4', 'f/5', 'd/5', 'f/4', 'a/4', 'c/5', 'e/5',
-
-                //Espacos - Mostra nome da Nota
-                // 50
-                'f/4', 'a/4', 'c/5', 'e/5', 'f/4', 'a/4', 'c/5', 'e/5',
-                //Espacos - Nao mostra nome da Nota
-                // 58 aqui
-                'f/4', 'a/4', 'c/5', 'e/5', 'a/4', 'f/4', 'c/5', 'e/5',
-                //Espacos - randomico
-                'a/4', 'e/5', 'c/5', 'f/4', 'c/5', 'f/4', 'a/4', 'e/5', 'c/5', 'e/5', 
-                'a/4', 'f/4', 'e/5', 'f/4', 'a/4', 'c/5', 'f/4', 'e/5', 'c/5', 'a/4', 
-                'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
-                
-                //Linhas e Espacos - Mostra nome da Nota
-                // 95
-                'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
-                'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
-                //Linhas e Espacos - Nao mostra nome da Nota
-                // 113
-                'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
-                'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5',
-                //Linhas e Espacos - Randomico
-                'e/4', 'g/4', 'f/4', 'a/4', 'g/4', 'b/4', 'a/4', 'c/5', 'b/4', 
-                'd/5', 'c/5', 'e/5', 'd/5', 'f/5', 'e/4', 'a/4', 'f/4', 'b/4', 
-                'g/4', 'c/5', 'a/4', 'd/5', 'b/4', 'e/5', 'c/5', 'f/5', 'd/5',
-                'e/4', 'b/4', 'f/4', 'c/5', 'g/4', 'd/5', 'a/4', 'e/5', 'b/4', 
-                'f/5', 'c/5', 'd/5', 'e/4', 'c/5', 'f/4', 'd/5', 'g/4', 'e/5', 
-                'a/4', 'f/5', 'b/4', 'c/5', 'd/5',
-
-                //Linhas e Espacos - Notas graves - mostrar nome da Nota
-                // 181
-                'e/4', 'd/4', 'c/4', 'b/3', 'e/4', 'd/4', 'c/4', 'b/3',
-                //Linhas e Espacos - Notas graves - Nao mostrar nome da Nota
-                //189
-                'e/4', 'd/4', 'c/4', 'b/3', 'e/4', 'd/4', 'c/4', 'b/3',
-                //Linhas e Espacos - Notas graves - Randomico
-                'd/4', 'e/4', 'c/4', 'b/3', 'e/4', 'd/4', 'c/4', 'b/3',
-                'c/4', 'e/4', 'd/4', 'b/3', 'b/3', 'e/4', 'd/4', 'c/4',
-                'b/3', 'c/4', 'd/4', 'e/4', 
-                
-
-                //Linhas e Espacos - Notas agudas - mostrar nome da Nota
-                // 217
-                'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
-                'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
-                //Linhas e Espacos - Notas agudas - Nao mostrar nome da Nota
-                // 229
-                'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
-                'f/5', 'g/5', 'a/5', 'b/5', 'c/6', 'd/6',
-                //Linhas e Espacos - Notas agudas - Randomico
-                'f/5', 'a/5', 'g/5', 'b/5', 'a/5', 'c/6', 'b/5', 'd/6',
-                'f/5', 'b/5', 'g/5', 'c/6', 'a/5', 'd/6', 'b/5',
-                'f/5', 'c/6', 'g/5', 'd/6', 'a/5', 'b/5',
-
-                //Linhas e Espacos - Todas as Notas - Mostrar nome da Nota
-                // 262
-                'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
-                'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
-                'b/5', 'c/6', 'd/6',
-                'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
-                'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
-                'b/5', 'c/6', 'd/6',
-                //Linhas e Espacos - Todas as Notas - Nao mostrar nome da Nota
-                // 296
-                'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
-                'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
-                'b/5', 'c/6', 'd/6',
-                'b/3', 'c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4',
-                'b/4', 'c/5', 'd/5', 'e/5', 'f/5', 'g/5', 'a/5',
-                'b/5', 'c/6', 'd/6',
-                
-                'b/3', 'd/4', 'c/4', 'e/4', 'd/4', 'f/4', 'e/4', 'f/4',
-                'e/4', 'g/4', 'f/4', 'a/4', 'g/4', 'b/4', 'a/4', 'c/5',
-                'b/4', 'd/5', 'c/5', 'e/5', 'd/5', 'f/5', 'e/5', 'f/5',
-                'e/5', 'g/5', 'f/5', 'a/5', 'g/5', 'b/5', 'a/5', 'c/6',
-                'b/5', 'd/6', 'c/6',
-                'b/3', 'e/4', 'c/4', 'f/4', 'd/4', 'g/4', 'e/4', 'a/4',
-                'f/4', 'b/4', 'g/4', 'c/5', 'a/4', 'd/5', 'b/4', 'e/5',
-                'c/5', 'f/5', 'd/5', 'g/5', 'e/5', 'a/5', 'f/5', 'b/5',
-                'g/5', 'c/6', 'a/5', 'd/6', 'b/5', 'c/6', 'd/6'
-            ]
-        };
-        
-        // Mapeamento de nota musical para letra
         const mapaNotasParaLetras = {
-            'b/3': 'B', 'c/4': 'C', 'd/4': 'D', 'e/4': 'E', 'f/4': 'F', 'g/4': 'G', 'a/4': 'A',
-            'b/4': 'B', 'c/5': 'C', 'd/5': 'D', 'e/5': 'E', 'f/5': 'F', 'g/5': 'G', 'a/5': 'A',
-            'b/5': 'B', 'c/6': 'C', 'd/6': 'D'
+            'b/3':'B','c/4':'C','d/4':'D','e/4':'E','f/4':'F','g/4':'G','a/4':'A',
+            'b/4':'B','c/5':'C','d/5':'D','e/5':'E','f/5':'F','g/5':'G','a/5':'A',
+            'b/5':'B','c/6':'C','d/6':'D'
         };
         
-        // Nomes dos níveis para exibição
-        const nomesNiveis = {
-            'linhas': 'LINHAS',
-            'espacos': 'ESPAÇOS',
-            'linhasEspacos': 'LINHAS + ESPAÇOS',
-            'graves': 'NOTAS GRAVES',
-            'agudas': 'NOTAS AGUDAS',
-            'completa': 'ESCALA COMPLETA'
-        };
-
-// Defina os pontos de tutorial no vetor (baseado em indiceSequencia)
-const pontosTutorial = {
-    0: { // Antes da primeira nota (índice 0)
-        titulo: "🎓 Vamos Aprender!",
-        mensagem: "<img src='linhas.png' alt='Mi - Sol - Si - Re - Fa'>",
-        //"Vamos aprender as notas que aparecem nas <strong>LINHAS</strong> do pentagrama!",
-        mostrarNomeNota: true
-    },
-    2: { // Antes da nota 11 (índice 10)
-        tipo: "toast",
-        mensagem: "Agora é com você! 👊"
-    },
-    6: { // Antes da nota 46 (índice 45)
-        titulo: "🎓 Vamos Aprender!",
-        mensagem: "<img src='Espacos.png' alt='Fá  Lá Dó Mi' style='width:100%'><br>" +
-                  "Agora vamos aprender as notas que aparecem nos <strong>ESPAÇOS</strong>.<br>" +
-                  "Repita os nomes das notas <b>Fá Lá Dó Mi</b> repita até Decorar<br>" +
-                  "<b>Fá Lá Dó Mi</b><br>" +
-                  "<b>Fá Lá Dó Mi</b><br>" +
-                  "Clique em 'Vamos lá!' para continuar.",
-        mostrarNomeNota: true
-    },
-    58: { // Antes da nota 59 (índice 58)
-        tipo: "toast",
-        mensagem: "Agora é com você! 👊"
-    },
-    95: { // Antes da nota 98 (índice 97) aqui
-        titulo: "🎓 Vamos Aprender!",
-        mensagem: "<img src='LinhaseEspacos.png' alt='Mi Fá Sol Lá Si Dó Ré Mi Fá' style='width:100%'><br>" +
-                  "Agora vamos juntar as notas que aparecem nas <strong>LINHAS</strong><br>" + 
-                  "e nos <strong>ESPAÇOS</strong>.<br>" +
-                  "Repita os nomes das notas <b>Mi Fá Sol Lá Si Dó Ré Mi Fá</b> repita até Decorar<br>" +
-                  "<b>Mi Fá Sol Lá Si Dó Ré Mi Fá</b><br>" +
-                  "<b>Mi Fá Sol Lá Si Dó Ré Mi Fá</b><br>" +
-                  "Clique em 'Vamos lá!' para continuar.",
-        mostrarNomeNota: true
-    },
-    113: { // Antes da nota 116 (índice 115)
-        tipo: "toast",
-        mensagem: "Agora é com você! 👊"
-    },
-    181: { // Antes da nota 184 (índice 183)
-        titulo: "🎓 Vamos Aprender!",
-        mensagem: "<img src='graves.png' alt='Mi Ré Dó Si' style='width:100%'><br>" +
-                  "Agora vamos aprender as notas <b>Graves</b> que aparecem abaixo da <strong>PENTAGRAMA</strong><br>" + 
-                  "Repita os nomes das notas <b>Mi Ré Dó Si</b> repita até Decorar<br>" +
-                  "<b>Mi Ré Dó Si</b><br>" +
-                  "<b>Mi Ré Dó Si</b><br>" +
-                  "Clique em 'Vamos lá!' para continuar.",
-        mostrarNomeNota: true
-    },
-    189: { // Antes da nota 192 (índice 191)
-        tipo: "toast",
-        mensagem: "Agora é com você! 👊"
-    },
-    217: { // Antes da nota 226 (índice 225)
-        titulo: "🎓 Vamos Aprender!",
-        mensagem: "<img src='agudas.png' alt='Mi Fá Sol Lá Si Dó Ré' style='width:100%'><br>" +
-                  "Agora vamos aprender as notas <b>Agudas</b> que aparecem acima da <strong>PENTAGRAMA</strong><br>" + 
-                  "Repita os nomes das notas <b>Mi Fá Sol Lá Si Dó Ré</b> repita até Decorar<br>" +
-                  "<b>Mi Fá Sol Lá Si Dó Ré</b><br>" +
-                  "<b>Mi Fá Sol Lá Si Dó Ré</b><br>" +
-                  "Clique em 'Vamos lá!' para continuar.",
-        mostrarNomeNota: true
-    },
-    229: { // Antes da nota 238 (índice 237)
-        tipo: "toast",
-        mensagem: "Agora é com você! 👊"
-    },
-    262: { // Antes da nota 262 (índice 261)
-        titulo: "🎓 Vamos Aprender!",
-        mensagem: "<img src='completo.png' alt='Si Dó Ré Mi Fá Sol Lá Si Dó Ré Mi Fá Sol Lá Si Dó Ré' style='width:100%'><br>" +
-                  "Vamos juntar todas as notas que já aprendemos até agora.<br>" +
-                  "A lista é longa <b>Si Dó Ré Mi Fá Sol Lá Si Dó Ré Mi Fá Sol Lá Si Dó Ré</b><br>" + 
-                  "Vamos repetir<b>Si Dó Ré Mi Fá Sol Lá Si Dó Ré Mi Fá Sol Lá Si Dó Ré</b><br>" +
-                  "<b>Si Dó Ré Mi Fá Sol Lá Si Dó Ré Mi Fá Sol Lá Si Dó Ré</b><br>" +
-                  "Clique em 'Vamos lá!' para continuar.",
-        mostrarNomeNota: true
-    },
-    296: { // Antes da nota 296 (índice 295)
-        tipo: "toast",
-        mensagem: "Agora é com você! 👊"
-    }
-};
-
-        
-        // Inicializar o jogo
+        // ==================== INICIALIZAÇÃO ====================
         document.addEventListener('DOMContentLoaded', function() {
             updateStats();
             setupKeyboard();
             setupFullscreen();
             setupSound();
             
-            // Verificar se é iOS e mostrar modal de ativação de som
+            // Forçar tela cheia automaticamente
+            setTimeout(() => {
+                enterFullscreen();
+            }, 500);
+            
+            // Verificar se é iOS
             if (isIOS() && !soundActivated) {
                 setTimeout(() => {
                     document.getElementById('soundActivationModal').style.display = 'flex';
@@ -1222,76 +524,72 @@ const pontosTutorial = {
             } else {
                 nextNote();
             }
-            
-            // Tentar entrar em tela cheia automaticamente em dispositivos móveis
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                setTimeout(enterFullscreen, 1000);
-            }
         });
         
         function isIOS() {
             return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         }
         
+        // ==================== TELA CHEIA ====================
+        function setupFullscreen() {
+            document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        }
+        
+        function toggleFullscreen() {
+            isFullscreen ? exitFullscreen() : enterFullscreen();
+        }
+        
+        function enterFullscreen() {
+            const element = document.documentElement;
+            if (element.requestFullscreen) element.requestFullscreen();
+            else if (element.webkitRequestFullscreen) element.webkitRequestFullscreen();
+            else if (element.mozRequestFullScreen) element.mozRequestFullScreen();
+            else if (element.msRequestFullscreen) element.msRequestFullscreen();
+        }
+        
+        function exitFullscreen() {
+            if (document.exitFullscreen) document.exitFullscreen();
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+            else if (document.msExitFullscreen) document.msExitFullscreen();
+        }
+        
+        function handleFullscreenChange() {
+            isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+            document.getElementById('fullscreenBtn').innerHTML = isFullscreen ? '⛶' : '⛶';
+        }
+        
+        // ==================== SOM ====================
         function setupSound() {
-            const soundBtn = document.getElementById('soundBtn');
-            soundBtn.addEventListener('click', toggleSound);
-            
-            // Inicializar AudioContext (mas não iniciar ainda)
             try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             } catch (e) {
-                console.log("AudioContext não suportado");
                 soundEnabled = false;
-                updateSoundButton();
             }
+            updateSoundButton();
         }
         
         function toggleSound() {
             soundEnabled = !soundEnabled;
             updateSoundButton();
-            
-            // Se está ativando o som no iOS, tentar ativar o AudioContext
-            if (soundEnabled && isIOS() && audioContext && audioContext.state === 'suspended') {
-                activateSound();
-            }
         }
         
         function updateSoundButton() {
-            const soundBtn = document.getElementById('soundBtn');
-            if (soundEnabled) {
-                soundBtn.innerHTML = '🔊';
-                soundBtn.classList.remove('sound-off');
-                soundBtn.title = 'Desativar Som';
-            } else {
-                soundBtn.innerHTML = '🔇';
-                soundBtn.classList.add('sound-off');
-                soundBtn.title = 'Ativar Som';
-            }
+            const btn = document.getElementById('soundBtn');
+            btn.innerHTML = soundEnabled ? '🔊' : '🔇';
+            btn.classList.toggle('sound-off', !soundEnabled);
         }
         
         function activateSound() {
             if (audioContext) {
-                // Para iOS, precisamos iniciar o AudioContext com uma interação do usuário
                 audioContext.resume().then(() => {
-                    console.log('AudioContext ativado com sucesso');
                     soundActivated = true;
                     soundEnabled = true;
                     updateSoundButton();
-                    
-                    // Tocar um som de teste
-                    tocarNotaTeste();
-                    
-                    // Fechar modal
                     document.getElementById('soundActivationModal').style.display = 'none';
-                    
-                    // Iniciar o jogo se ainda não começou
-                    if (!gameActive && !gameOver) {
-                        nextNote();
-                    }
-                }).catch(e => {
-                    console.log('Erro ao ativar AudioContext:', e);
-                    showToast('Não foi possível ativar o som. Verifique as configurações do dispositivo.');
+                    tocarNotaTeste();
                 });
             }
         }
@@ -1300,173 +598,52 @@ const pontosTutorial = {
             soundEnabled = false;
             updateSoundButton();
             document.getElementById('soundActivationModal').style.display = 'none';
-            
-            // Iniciar o jogo sem som
-            if (!gameActive && !gameOver) {
-                nextNote();
-            }
         }
         
         function tocarNotaTeste() {
             if (!soundEnabled || !audioContext) return;
-            
             try {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // Lá 440Hz
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.1);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.3);
-                
-                console.log('Som de teste tocado');
-            } catch (e) {
-                console.log('Erro ao tocar som de teste:', e);
-            }
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = 440;
+                gain.gain.value = 0.2;
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+            } catch (e) {}
         }
         
-        function setupFullscreen() {
-            const fullscreenBtn = document.getElementById('fullscreenBtn');
-            
-            fullscreenBtn.addEventListener('click', toggleFullscreen);
-            
-            // Detectar mudanças no modo de tela cheia
-            document.addEventListener('fullscreenchange', handleFullscreenChange);
-            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+        function tocarNota(frequencia) {
+            if (!soundEnabled || !audioContext) return;
+            try {
+                if (audioContext.state === 'suspended') audioContext.resume();
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = frequencia;
+                gain.gain.value = 0.3;
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.5);
+            } catch (e) {}
         }
         
-        function toggleFullscreen() {
-            if (!isFullscreen) {
-                enterFullscreen();
-            } else {
-                exitFullscreen();
-            }
-        }
-        
-        function enterFullscreen() {
-            const element = document.documentElement;
-            
-            if (element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen();
-            } else if (element.mozRequestFullScreen) {
-                element.mozRequestFullScreen();
-            } else if (element.msRequestFullscreen) {
-                element.msRequestFullscreen();
-            }
-        }
-        
-        function exitFullscreen() {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            }
-        }
-        
-        function handleFullscreenChange() {
-            isFullscreen = !!(document.fullscreenElement || 
-                            document.webkitFullscreenElement || 
-                            document.mozFullScreenElement || 
-                            document.msFullscreenElement);
-            
-            const fullscreenBtn = document.getElementById('fullscreenBtn');
-            fullscreenBtn.innerHTML = isFullscreen ? '⛶' : '⛶';
-            fullscreenBtn.title = isFullscreen ? 'Sair da Tela Cheia' : 'Tela Cheia';
-            
-            // Ajustar layout quando entrar/sair da tela cheia
-            setTimeout(adjustLayoutForFullscreen, 100);
-        }
-        
-        function adjustLayoutForFullscreen() {
-            if (isFullscreen) {
-                // Ajustar para melhor uso do espaço
-                document.body.style.padding = '0';
-                document.querySelector('.container').style.padding = '20px';
-            } else {
-                document.body.style.padding = '15px';
-            }
-            
-            // Recriar a notação para ajustar ao novo tamanho
-            if (currentNote) {
-                if (modoIniciante && notaEscolhida) {
-                    createNotation(notaEscolhida);
-                } else {
-                    const octaves = notasPorClave[Clave][currentNote];
-                    const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
-                    createNotation(selectedOctave);
-                }
-            }
-        }
-        
-        function setupKeyboard() {
-            document.addEventListener('keydown', function(event) {
-                if (gameOver || !gameActive) return;
-                
-                const keyMap = {
-                    '1': 'C', 'd': 'C', 'D': 'C',
-                    '2': 'D', 'r': 'D', 'R': 'D',
-                    '3': 'E', 'm': 'E', 'M': 'E',
-                    '4': 'F', 'f': 'F', 'F': 'F',
-                    '5': 'G', 's': 'G', 'S': 'G',
-                    '6': 'A', 'l': 'A', 'L': 'A',
-                    '7': 'B', 't': 'B', 'T': 'B',
-                    ' ': nextNote,
-                    'Enter': nextNote,
-                    'Escape': endGame,
-                    'e': endGame, 'E': endGame,
-                    'f': toggleFullscreen, 'F': toggleFullscreen
-                };
-                
-                const action = keyMap[event.key];
-                if (action) {
-                    if (typeof action === 'function') {
-                        action();
-                    } else {
-                        checkAnswer(action);
-                    }
-                }
-            });
-        }
-        
+        // ==================== JOGO ====================
         function nextNote() {
             if (gameOver || tutorialAtivo || gamePaused) return;
             
-            // Parar qualquer timer existente
-            if (timer) {
-                clearInterval(timer);
-                timer = null;
-            }
-            
-            // Verificar se é modo iniciante e se ainda não começou
-            if (modoIniciante && indiceSequencia === 0) {
-                return;
-            }
+            if (timer) clearInterval(timer);
             
             if (modoIniciante && sequenciaAtual.length > 0) {
-                // Modo iniciante
                 notaEscolhida = sequenciaAtual[indiceSequencia];
                 indiceSequencia = (indiceSequencia + 1) % sequenciaAtual.length;
                 currentNote = mapaNotasParaLetras[notaEscolhida] || 'C';
                 createNotation(notaEscolhida);
             } else {
-                // Modo normal
-                const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+                const notes = ['C','D','E','F','G','A','B'];
                 currentNote = notes[Math.floor(Math.random() * notes.length)];
                 const octaves = notasPorClave[Clave][currentNote];
                 const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
@@ -1474,307 +651,200 @@ const pontosTutorial = {
                 notaEscolhida = selectedOctave;
             }
             
-            // Tocar som da nota
             if (soundEnabled) {
-                let frequencia = pesquisarFrequencia(notaEscolhida.toUpperCase().replace("/", ""));
-                if (frequencia) tocarNota(frequencia);
+                let freq = pesquisarFrequencia(notaEscolhida.toUpperCase().replace("/",""));
+                if (freq) tocarNota(freq);
             }
-
-            // Resetar progresso
+            
             resetarBarraProgresso();
             iniciarBarraProgresso();
-
-            // Resetar e iniciar timer
+            
             timeLeft = TEMPO_RESPOSTA;
             gameActive = true;
             timer = setInterval(updateTimer, 1000);
         }
-
-        function getClefName(clave) {
-            switch(clave) {
-                case 'SOL': return 'treble';
-                case 'FA': return 'bass';
-                case 'DO': return 'alto'; // Clave de Dó na 3ª linha
-                default: return 'treble';
-            }
-        }
-                
+        
         function updateTimer() {
-
-            // Não fazer nada se o jogo estiver pausado
-            if (gamePaused || gameOver) {
-                return;
-            }
-            
+            if (gamePaused || gameOver) return;
             timeLeft--;
-            
-            // Atualizar visualmente o tempo restante
             if (timeLeft <= 0) {
                 clearInterval(timer);
                 timer = null;
-                
-                // Só contar erro se o jogo não estiver pausado
-                if (!gamePaused && !gameOver) {
-                    handleTimeOut();
-                }
+                if (!gamePaused && !gameOver) handleTimeOut();
             }
         }
-                
+        
+        function handleTimeOut() {
+            if (gamePaused || gameOver) return;
+            if (errors >= 5) { showGameOver(); return; }
+            errors++;
+            streak = 0;
+            total++;
+            updateStats();
+            pararBarraProgresso();
+            if (errors >= 5) setTimeout(showGameOver, 1000);
+            nextNote();
+        }
+        
         function checkAnswer(userNote) {
-            // Verificar se o jogo está pausado
             if (gamePaused || gameOver || !gameActive || tutorialAtivo) return;
             
-            let Notas = "ABCDEFGAB"
-            let posicao = 0;
             let notaAjustada = currentNote;
-            
             if (Clave === "FA") {
-                posicao = Notas.indexOf(currentNote) + 2;
-                notaAjustada = Notas.charAt(posicao % Notas.length); 
+                let pos = "ABCDEFGAB".indexOf(currentNote) + 2;
+                notaAjustada = "ABCDEFGAB".charAt(pos % 7);
             } else if (Clave === "DO") {
-                posicao = Notas.indexOf(currentNote) + 1;
-                notaAjustada = Notas.charAt(posicao % Notas.length); 
+                let pos = "ABCDEFGAB".indexOf(currentNote) + 1;
+                notaAjustada = "ABCDEFGAB".charAt(pos % 7);
             }
             
-            if (errors >= 5) {
-                showGameOver();
-                return;
-            }
-            
-            if (indiceSequencia == 0 && modoIniciante) {
-                setTimeout(showGameOver, 1000);
-            }
+            if (errors >= 5) { showGameOver(); return; }
             
             clearInterval(timer);
             pararBarraProgresso();
-
             total++;
-        
-            // Apagar a nota imediatamente
+            
             createNotation(null, false);
-
+            
             if (userNote === notaAjustada) {
-                // Acerto
                 score++;
                 streak++;
                 mostrarSimboloNoPentagrama('✅');
-                setTimeout(() => {
-                    if (!gamePaused && !gameOver) {
-                        nextNote();
-                    }
-                }, 500);
-                
+                setTimeout(() => { if (!gamePaused && !gameOver) nextNote(); }, 500);
             } else {
                 errors++;
                 streak = 0;
                 mostrarSimboloNoPentagrama('❌');
-                if (errors >= 5) {
-                    setTimeout(showGameOver, 1000);
-                } else {
-                    setTimeout(() => {
-                        if (!gamePaused && !gameOver) {
-                            nextNote();
-                        }
-                    }, 500);
-                }
+                if (errors >= 5) setTimeout(showGameOver, 1000);
+                else setTimeout(() => { if (!gamePaused && !gameOver) nextNote(); }, 500);
             }
             
             updateStats();
         }
-
-        function handleTimeOut() {
-            
-            // NÃO processar timeout se o jogo estiver pausado ou terminado
-            if (gamePaused || gameOver || posTutorial) {
-                posTutorial = false
-                return;
-            }
-            
-            if (errors >= 5) {
-                showGameOver();
-                return;
-            }
-            
-            // Contar erro
-            errors++;
-            streak = 0;
-            total++;
-            
-            updateStats();
-            pararBarraProgresso();
-            
-            if (errors >= 5) {
-                setTimeout(showGameOver, 1000);
-            }
-                nextNote();
-        }
-                
+        
         function updateStats() {
             document.getElementById('Acertos').textContent = score;
-            
-            // GARANTIR QUE APENAS 5 ERROS SÃO EXIBIDOS
             for (let i = 1; i <= 5; i++) {
-                const erro = document.getElementById('erro' + i);
-                if (i <= Math.min(errors, 5)) { // <-- Adicionei Math.min
-                    erro.classList.remove('mostra-erro');
-                } else {
-                    erro.classList.add('mostra-erro');
-                }
+                document.getElementById('erro'+i).classList.toggle('mostra-erro', i > errors);
             }
         }
-                
+        
         function showGameOver() {
-            // Pausar tudo primeiro
             clearInterval(timer);
             pararBarraProgresso();
             gameActive = false;
             gamePaused = true;
-            
-            // Resto da função permanece igual...
-            if (errors > 5) {
-                errors = 5;
-            }
-            
             gameOver = true;
             
             document.getElementById('finalScore').textContent = score;
             document.getElementById('finalErrors').textContent = errors;
             document.getElementById('finalTotal').textContent = total;
-            
-            const claveNomes = {
-                'SOL': 'Sol',
-                'FA': 'Fá',
-                'DO': 'Dó'
-            };
-            document.getElementById('finalClave').textContent = claveNomes[Clave];
-            
-            const modoTexto = modoIniciante ? `Modo Iniciante (${nomesNiveis[nivelAtual]})` : 'Modo Normal';
-            document.getElementById('finalModo').textContent = modoTexto;
-            
             document.getElementById('gameOverModal').style.display = 'flex';
-            
-            tocarSomGameOver();
-        }
-
-        function tocarSomGameOver() {
-            if (!soundEnabled || !audioContext) return;
-            
-            try {
-                // Garantir que o AudioContext está ativo (especialmente para iOS)
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume();
-                }
-                
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.type = 'sawtooth';
-                oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
-                oscillator.frequency.exponentialRampToValueAtTime(55, audioContext.currentTime + 0.5);
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.7);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.1);
-            } catch (e) {
-                console.log("Erro ao tocar som de game over");
-            }
-        }
-                
-        function tocarNota(frequencia) {
-            if (!soundEnabled || !audioContext) return;
-            
-            try {
-                // Para iOS, garantir que o AudioContext está ativo
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume();
-                }
-                
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.type = 'triangle';
-                oscillator.frequency.setValueAtTime(frequencia, audioContext.currentTime);
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                oscillator.start();
-                
-                setTimeout(() => {
-                    oscillator.stop();
-                }, 1000);
-            } catch (e) {
-                console.log("Erro ao tocar nota:", e);
-            }
         }
         
-        function endGame() {
-            if (!gameOver) {
-                showGameOver();
-            }
-        }
-                
-        function restartGame() {
-            //score = 0;
-            //errors = 0;
-            //total = 0;
-            //streak = 0;
-            gameOver = false;
-            gamePaused = false;
-            pauseReason = '';
-            tutorialAtivo = false;
-            
-            // Resetar botão de pausa
-            const pauseBtn = document.getElementById('pauseBtn');
-            pauseBtn.innerHTML = '⏸️';
-            pauseBtn.classList.remove('pause-active');
-            pauseBtn.title = 'Suspender';
-            
-            // Reativar todos os botões
-            document.querySelectorAll('.note-btn').forEach(btn => {
-                btn.style.pointerEvents = 'auto';
-                btn.style.opacity = '1';
-                btn.disabled = false;
-            });
-            
-            for (let i = 1; i <= 5; i++) {
-                document.getElementById('erro' + i).classList.add('mostra-erro');
-            }
-
-            closeModal();
-            updateStats();
-            
-            // Esconder mensagem de pausa
-            document.getElementById('nomeNota').style.display = 'none';
-            
-            // Se for modo iniciante, mostrar tutorial inicial
-            if (modoIniciante) {
-                iniciarNivelIniciante('linhas');
-                
-                setTimeout(() => {
-                    mostrarModalTutorial("🎓 Vamos Aprender!", 
-                        "Vamos aprender as notas que aparecem nas <strong>LINHAS</strong> do pentagrama!<br><br>" +
-                        "Clique em 'Vamos lá!' para começar.");
-                }, 300);
-                
-                createNotation(null, false);
-            } else {
-                nextNote();
-            }
-        }
-
         function closeModal() {
             document.getElementById('gameOverModal').style.display = 'none';
         }
+        
+        function restartGame() {
+            score = 0;
+            errors = 0;
+            total = 0;
+            streak = 0;
+            gameOver = false;
+            gamePaused = false;
+            updateStats();
+            closeModal();
+            nextNote();
+        }
+        
+        function togglePause() {
+            if (gameOver || tutorialAtivo) return;
+            
+            if (gamePaused && pauseReason === 'user') {
+                continueGame();
+            } else if (!gamePaused) {
+                pauseGame('user');
+            }
+        }
+        
+        function pauseGame(reason) {
+            if (gameOver || gamePaused) return;
+            
+            gamePaused = true;
+            pauseReason = reason;
+            pauseStartTime = Date.now();
+            
+            if (timer) clearInterval(timer);
+            timer = null;
+            pararBarraProgresso();
+            
+            document.querySelectorAll('.notes-grid .note-btn').forEach(btn => {
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.5';
+            });
+            
+            if (reason === 'user') {
+                document.getElementById('pauseBtn').innerHTML = '▶️';
+                document.getElementById('pauseBtn').classList.add('pause-active');
+            }
+        }
+        
+        function continueGame() {
+            if (!gamePaused) return;
+            
+            if (pauseReason === 'user') {
+                document.getElementById('pauseBtn').innerHTML = '⏸️';
+                document.getElementById('pauseBtn').classList.remove('pause-active');
+            }
+            
+            document.querySelectorAll('.notes-grid .note-btn').forEach(btn => {
+                btn.style.pointerEvents = 'auto';
+                btn.style.opacity = '1';
+            });
+            
+            gameActive = true;
+            gamePaused = false;
+            
+            if (!timer) timer = setInterval(updateTimer, 1000);
+            resetarBarraProgresso();
+            iniciarBarraProgresso();
+            
+            pauseReason = '';
+        }
+        
+        // ==================== PENTAGRAMA ====================
+        function getClefName(clave) {
+            return clave === 'SOL' ? 'treble' : clave === 'FA' ? 'bass' : 'alto';
+        }
+        
+        function createNotation(noteKey, mostrarNota = true) {
+            try {
+                const container = document.getElementById('notation');
+                container.innerHTML = '';
                 
+                const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
+                const width = Math.min(window.innerWidth - 20, 600);
+                renderer.resize(width, 120);
+                const context = renderer.getContext();
+                const staveWidth = width - 55;
+                
+                const stave = new Vex.Flow.Stave(50, 20, staveWidth);
+                stave.addClef(getClefName(Clave));
+                stave.setContext(context).draw();
+                
+                if (mostrarNota && noteKey) {
+                    const note = new Vex.Flow.StaveNote({ keys: [noteKey], duration: 'w' });
+                    const voice = new Vex.Flow.Voice({ num_beats: 1, beat_value: 1 });
+                    voice.addTickables([note]);
+                    new Vex.Flow.Formatter().joinVoices([voice]).format([voice], staveWidth - 20);
+                    voice.draw(context, stave);
+                }
+            } catch (error) {
+                console.error('Erro ao criar notação:', error);
+            }
+        }
+        
         function mostrarSimboloNoPentagrama(simbolo) {
             const container = document.getElementById('notation');
             container.innerHTML = '';
@@ -1791,788 +861,134 @@ const pontosTutorial = {
             
             const svg = container.querySelector('svg');
             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            
             text.setAttribute('x', width / 2);
             text.setAttribute('y', 70);
             text.setAttribute('text-anchor', 'middle');
             text.setAttribute('font-size', '60');
             text.setAttribute('font-weight', 'bold');
-            
-            if (simbolo === '✅') {
-                text.setAttribute('fill', '#06D6A0');
-            } else {
-                text.setAttribute('fill', '#EF476F');
-            }
-            
+            text.setAttribute('fill', simbolo === '✅' ? '#06D6A0' : '#EF476F');
             text.textContent = simbolo;
             svg.appendChild(text);
         }
         
-        const TEMPO_TOTAL = 10;
-        let progressInterval = null;
-
+        // ==================== BARRA DE PROGRESSO ====================
         function iniciarBarraProgresso() {
             pararBarraProgresso();
-            
             const progressBar = document.getElementById('progressBar');
-            let tempo = TEMPO_TOTAL;
-            
             progressBar.style.width = '100%';
             progressBar.className = 'progress-bar';
             
             progressInterval = setInterval(() => {
-                // NÃO decrementar se estiver pausado
-                if (gamePaused) {
-                    return;
-                }
+                if (gamePaused) return;
+                const tempo = parseFloat(progressBar.style.width) || 100;
+                const novaPorcentagem = tempo - 10;
+                progressBar.style.width = novaPorcentagem + '%';
                 
-                tempo--;
-                const porcentagem = (tempo / TEMPO_TOTAL) * 100;
+                if (novaPorcentagem <= 30) progressBar.className = 'progress-bar danger';
+                else if (novaPorcentagem <= 50) progressBar.className = 'progress-bar warning';
                 
-                progressBar.style.width = porcentagem + '%';
-                
-                if (tempo <= 3) {
-                    progressBar.className = 'progress-bar danger';
-                } else if (tempo <= 5) {
-                    progressBar.className = 'progress-bar warning';
-                }
-                
-                if (tempo <= 0) {
+                if (novaPorcentagem <= 0) {
                     pararBarraProgresso();
                 }
             }, 1000);
-            
         }
-
+        
         function pararBarraProgresso() {
-            if (progressInterval) {
-                clearInterval(progressInterval);
-                progressInterval = null;
-            }
+            if (progressInterval) clearInterval(progressInterval);
         }
-
+        
         function resetarBarraProgresso() {
             pararBarraProgresso();
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.width = '100%';
-            progressBar.className = 'progress-bar';
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('progressBar').className = 'progress-bar';
         }
         
+        // ==================== UTILITÁRIOS ====================
         function pesquisarFrequencia(nota) {
             const indice = escala.findIndex(item => item[0] === nota);
-            let voltaFrequencia = 0;
-            if (Clave === "FA") {
-                voltaFrequencia = 5;
-            } else if (Clave === "DO") {
-                voltaFrequencia = 6;
-            }
-
-            // Verificar se é hora de mostrar tutorial
-            verificarTutorial(indiceSequencia);
-
-            document.getElementById('nomeNota').textContent = "";
-            const encontrado = escala[indice - voltaFrequencia];
+            let ajuste = Clave === "FA" ? 5 : Clave === "DO" ? 6 : 0;
             
-            if (modoIniciante && encontrado) {
-                if (mostrarNomeNota) {
-                    const notaAtual = noteNames[encontrado[0].substring(0, 1)];
-                    document.getElementById('nomeNota').textContent = notaAtual;
-                    posicionarSobreNota(indice);
-                }
-            }
-
-            return encontrado ? encontrado[1] : null;
-        }
-                
-                // Funções do modo iniciante
-        function toggleModoIniciante(ativado) {
-            modoIniciante = ativado;
-            
-            // Resetar variáveis do tutorial
-            mostrarNomeNota = true;
-            tutorialAtivo = false;
-            
-            const niveisContainer = document.getElementById('niveisContainer');
-            
-            if (niveisContainer) {
-                niveisContainer.style.display = ativado ? 'block' : 'none';
+            if (modoIniciante && mostrarNomeNota && indice - ajuste >= 0) {
+                const notaAtual = noteNames[escala[indice - ajuste][0].substring(0,1)];
+                document.getElementById('nomeNota').textContent = notaAtual;
+                document.getElementById('nomeNota').style.display = 'block';
+                posicionarSobreNota(indice);
             }
             
-            if (ativado) {
-                // Iniciar com nível 1 (linhas) mas NÃO mostrar tutorial ainda
-                iniciarNivelIniciante('linhas');
-                
-                // Mostrar primeiro tutorial após selecionar o modo
-                setTimeout(() => {
-                    mostrarModalTutorial("🎓 Vamos Aprender!", 
-                    "<img src='Linhas.png' alt='Mi Sol Si Re Fa' style='width:100%'><br>" +
-                    "Vamos aprender as notas que aparecem nas <strong>LINHAS</strong>.<br>" +
-                    "Repita os nomes das notas <b>Mi Sol Si Ré Fá</b> repita até Decorar<br>" +
-                    "<b>Mi Sol Si Ré Fá</b><br>" +
-                    "<b>Mi Sol Si Ré Fá</b><br>" +
-                    "Clique em 'Vamos lá!' para começar.");
-                }, 300);
-                
-                // Resetar jogo mas NÃO chamar nextNote() ainda
-                //score = 0;
-                //errors = 0;
-                //total = 0;
-                //streak = 0;
-                gameOver = false;
-                
-                for (let i = 1; i <= 5; i++) {
-                    document.getElementById('erro' + i).classList.add('mostra-erro');
-                }
-                
-                updateStats();
-                
-                // Mostrar pentagrama vazio
-                createNotation(null, false);
-                
-            } else {
-                // Voltar ao modo normal
-                showToast('🎵 Modo normal ativado.');
-                restartGame();
-            }
-        }        
-
-        function iniciarNivelIniciante(nivel) {
-            nivelAtual = nivel;
-            // Pegar todas as notas do nível
-            const todasNotas = [...sequenciasIniciante[nivel]];
-            // Embaralhar as notas
-            //shuffleArray(todasNotas);
-            
-            // Definir sequência atual
-            sequenciaAtual = todasNotas;
-            indiceSequencia = 0; 
-
+            return indice - ajuste >= 0 ? escala[indice - ajuste][1] : null;
         }
         
-        function capitalizarPrimeiraLetra(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-        
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-        
-        // Função para compartilhar resultados
-        function shareResults() {
-            // Calcular precisão
-            const precisao = total > 0 ? Math.round((score / total) * 100) : 0;
-            
-            // Texto para compartilhamento
-            const modoTexto = modoIniciante ? `Modo Iniciante (${nomesNiveis[nivelAtual]})` : 'Modo Normal';
-            
-            const shareText = `🎵 Treino Musical - Resultados 🎵
-
-            🎯 Acertos: ${score}
-            ❌ Erros: ${errors}
-            📊 Total de notas: ${total}
-            🎯 Precisão: ${precisao}%
-            🗝️ Clave: ${Clave === 'SOL' ? 'Sol' : Clave === 'FA' ? 'Fá' : 'Dó'}
-            🎓 ${modoTexto}
-
-            🏆 Desafie-se também em: https://ensaiosregionalgoiania.github.io/escala/index.html
-
-            #TreinoMusical #AprendaMúsica #JogoMusical`;
-            
-            // URL do jogo
-            const gameURL = window.location.href;
-            
-            // Usar a Web Share API se disponível (funciona em dispositivos móveis)
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Meu resultado no Treino Musical',
-                    text: shareText,
-                    url: gameURL
-                })
-                .then(() => console.log('Compartilhamento realizado com sucesso!'))
-                .catch((error) => {
-                    console.log('Erro ao compartilhar:', error);
-                    fallbackShare(shareText);
-                });
-            } else {
-                // Fallback para navegadores sem Web Share API
-                fallbackShare(shareText);
-            }
-        }
-        
-        function fallbackShare(shareText) {
-            // Copiar para área de transferência
-            navigator.clipboard.writeText(shareText)
-                .then(() => {
-                    showToast('Resultado copiado para a área de transferência! 📋');
-                })
-                .catch(() => {
-                    // Fallback mais antigo
-                    const textArea = document.createElement('textarea');
-                    textArea.value = shareText;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                    showToast('Resultado copiado para a área de transferência! 📋');
-                });
-        }
-        
-        function showToast(message) {
-            const toast = document.getElementById('shareToast');
-            toast.textContent = message;
-            toast.style.display = 'block';
-            
-            // Esconder o toast após 3 segundos
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
-        }
-
         function posicionarSobreNota(indice) {
             const container = document.getElementById('notation');
-            const nomeNotaDiv = document.getElementById('nomeNota');
-            
-            // Método 1: Usando getBoundingClientRect() + scroll
+            const nomeDiv = document.getElementById('nomeNota');
             const rect = container.getBoundingClientRect();
             
-            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            // Coordenadas absolutas da página
-            const absoluteLeft = rect.left + scrollLeft;
-            const absoluteTop = rect.top + scrollTop;
-            
-            // Posição aproximada onde a nota aparece (ajuste conforme necessário)
-            const x = absoluteLeft + (rect.width * 0.4); // 60% da largura (notas geralmente ficam à direita)
-            const y = absoluteTop + (rect.height * (((escala.length - indice) * 0.039) + 0.18)); // 30% da altura
-            //alert(escala.length + " " + indice + " - " + (((escala.length - indice) * 0.04) + 0.18))
-            nomeNotaDiv.style.position = 'absolute';
-            nomeNotaDiv.style.left = `${x}px`;
-            nomeNotaDiv.style.top = `${y}px`;
-            nomeNotaDiv.style.display = 'block';
-            //((escala.length - indice) * 0.051)
-            //console.log("Posicionado em:", { x, y, rect });
+            nomeDiv.style.left = (rect.left + rect.width * 0.6) + 'px';
+            nomeDiv.style.top = (rect.top + rect.height * 0.5) + 'px';
         }
-
-        function verificarTutorial(indiceAtual) {
-            // Ignorar índice 0 (já foi tratado no início)
-            if (indiceAtual === 0) return;
-            const pontoTutorial = pontosTutorial[indiceAtual];
-            
-            if (pontoTutorial) {
-
-                if (pontoTutorial.tipo === "toast") {
-                    // Mostrar toast rápido
-                    showAgoraComVoceToast(pontoTutorial.mensagem);
-                } else {
-                    // Mostrar modal de tutorial completo
-                    mostrarModalTutorial(pontoTutorial.titulo, pontoTutorial.mensagem);
-                    
-                    // Atualizar se deve mostrar nome da nota
-                    if (pontoTutorial.mostrarNomeNota !== undefined) {
-                        mostrarNomeNota = pontoTutorial.mostrarNomeNota;
-                    }
-                }
-            }
-        }
-
-        // Adicione estas funções para controlar o tutorial:
-        function mostrarModalTutorial(titulo, mensagem) {
-            tutorialAtivo = true;
-            document.getElementById('tutorialTitle').innerHTML = titulo;
-            document.getElementById('tutorialMessage').innerHTML = mensagem;
-            
-            // PAUSAR o jogo ANTES de mostrar o modal
-            pauseGame('tutorial');
-            
-            // Agora mostrar o modal
-            document.getElementById('tutorialModal').style.display = 'flex';
-            
-        }
-
-        function closeTutorial() {
-            tutorialAtivo = false;
-            document.getElementById('tutorialModal').style.display = 'none';
-            
-            // Se for o primeiro tutorial, iniciar o jogo
-            if (modoIniciante && indiceSequencia === 0) {
-                
-                // Continuar o jogo (sair do modo pausa)
-                continueGame();
-                
-                // Começar o jogo após fechar o tutorial
-                setTimeout(() => {
-                    // Resetar timer para começar
-                    timeLeft = TEMPO_RESPOSTA;
-                    gameActive = true;
-                    
-                    // Gerar a primeira nota
-                    notaEscolhida = sequenciaAtual[indiceSequencia];
-                    indiceSequencia = (indiceSequencia + 1) % sequenciaAtual.length;
-                    currentNote = mapaNotasParaLetras[notaEscolhida] || 'C';
-                    
-                    // Criar notação com a nota específica
-                    createNotation(notaEscolhida);
-                    
-                    // Tocar som da nota (se habilitado)
-                    if (soundEnabled) {
-                        let frequencia = pesquisarFrequencia(notaEscolhida.toUpperCase().replace("/", ""));
-                        if (frequencia) tocarNota(frequencia);
-                    }
-
-                    resetarBarraProgresso();
-                    iniciarBarraProgresso();
-
-                }, 100);
-
-            } else {
-                posTutorial = true
-                // Retomar o jogo normal
-                continueGame();
-                //posTutorial = false
-
-            }
-        }
-
-        function showAgoraComVoceToast(mensagem) {
-            const toast = document.getElementById('agoraComVoceToast');
-            toast.textContent = mensagem;
-            toast.style.display = 'block';
-            
-            // Esconder o toast após 2 segundos
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 5000);
-            
-            // Desativar mostrar nome da nota quando for "Agora é com você"
-            if (mensagem.includes("Agora é com você")) {
-                mostrarNomeNota = false;
-            }
-        }
-
+        
         function MudaClave(botaoId) {
             if (gameOver || tutorialAtivo || gamePaused) return;
-            // Resto da função permanece igual...
-            // Remover classe ativa de todos os botões de clave
-            const botoesClave = ['claveSOL', 'claveFA', 'claveDO'];
-            botoesClave.forEach(id => {
-                const btn = document.getElementById(id);
-                //btn.classList.remove('clave-active');
-            });
             
-            // Ativar o botão clicado
-            const botaoClicado = document.getElementById(botaoId);
-            //botaoClicado.classList.add('clave-active');
+            document.getElementById('claveSOL').style.display = 'block';
+            document.getElementById('claveFA').style.display = 'block';
+            document.getElementById('claveDO').style.display = 'block';
             
-            // Atualizar a clave baseada no botão clicado
-            switch(botaoId) {
-                case 'claveSOL':
-                    document.getElementById("claveSOL").style.display = "none"
-                    document.getElementById("claveFA").style.display = "block"
-                    document.getElementById("claveDO").style.display = "block"
-                    Clave = "SOL";
-                    break;
-                case 'claveFA':
-                    document.getElementById("claveSOL").style.display = "block"
-                    document.getElementById("claveFA").style.display = "none"
-                    document.getElementById("claveDO").style.display = "block"
-                    Clave = "FA";
-                    break;
-                case 'claveDO':
-                    document.getElementById("claveSOL").style.display = "block"
-                    document.getElementById("claveFA").style.display = "block"
-                    document.getElementById("claveDO").style.display = "none"
-                    Clave = "DO";
-                    break;
+            if (botaoId === 'claveSOL') {
+                Clave = "SOL";
+                document.getElementById('claveSOL').style.display = 'none';
+            } else if (botaoId === 'claveFA') {
+                Clave = "FA";
+                document.getElementById('claveFA').style.display = 'none';
+            } else if (botaoId === 'claveDO') {
+                Clave = "DO";
+                document.getElementById('claveDO').style.display = 'none';
             }
             
-            // Tocar um som de confirmação
-            if (soundEnabled) {
-                tocarSomMudancaClave();
-            }
-            
-            // Atualizar a notação atual se houver uma nota sendo mostrada
             if (currentNote && notaEscolhida && !gamePaused) {
-                if (modoIniciante) {
-                    // No modo iniciante, manter a mesma nota mas na nova clave
-                    createNotation(notaEscolhida);
-                } else {
-                    // No modo normal, gerar nova nota na nova clave
-                    const octaves = notasPorClave[Clave][currentNote];
-                    const selectedOctave = octaves[Math.floor(Math.random() * octaves.length)];
-                    createNotation(selectedOctave);
-                    notaEscolhida = selectedOctave;
-                }
-                
-                // Reposicionar nome da nota se estiver visível
-                if (modoIniciante && mostrarNomeNota) {
-                    const indice = escala.findIndex(item => item[0] === notaEscolhida.toUpperCase().replace("/", ""));
-                    if (indice !== -1) {
-                        const notaAtual = noteNames[escala[indice][0].substring(0, 1)];
-                        document.getElementById('nomeNota').textContent = notaAtual;
-                        posicionarSobreNota(indice);
-                    }
-                }
-            }
-            
-            // Mostrar mensagem informativa
-            const claveNomes = {
-                'SOL': 'Sol',
-                'FA': 'Fá', 
-                'DO': 'Dó'
-            };
-            
-            showToast(`🗝️ Clave alterada para ${claveNomes[Clave]}`);
-        }
-
-        function tocarSomMudancaClave() {
-            if (!soundEnabled || !audioContext) return;
-            
-            try {
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume();
-                }
-                
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                // Som diferente para cada clave
-                let frequencia = 440; // Lá padrão para clave de Sol
-                
-                switch(Clave) {
-                    case 'FA':
-                        frequencia = 220; // Lá mais grave para clave de Fá
-                        break;
-                    case 'DO':
-                        frequencia = 330; // Mi para clave de Dó
-                        break;
-                }
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(frequencia, audioContext.currentTime);
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.1);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.3);
-            } catch (e) {
-                console.log("Erro ao tocar som de mudança de clave");
-            }
-        }
-
-        // Função para pausar/continuar o jogo
-        function togglePause() {
-            if (gameOver || tutorialAtivo) return;
-            
-            if (gamePaused && pauseReason === 'user') {
-                continueGame();
-            } else if (!gamePaused) {
-                pauseGame('user');
-            }
-        }
-
-        // Função para iniciar barra de progresso com tempo específico
-        function iniciarBarraProgressoComTempo(tempo) {
-            pararBarraProgresso();
-            
-            const progressBar = document.getElementById('progressBar');
-            let tempoRestante = tempo;
-            
-            progressBar.style.width = '100%';
-            progressBar.className = 'progress-bar';
-            
-            progressInterval = setInterval(() => {
-                // Não atualizar se estiver pausado
-                if (gamePaused) return;
-                
-                tempoRestante--;
-                const porcentagem = (tempoRestante / TEMPO_RESPOSTA) * 100;
-                
-                progressBar.style.width = porcentagem + '%';
-                
-                if (tempoRestante <= 3) {
-                    progressBar.className = 'progress-bar danger';
-                } else if (tempoRestante <= 5) {
-                    progressBar.className = 'progress-bar warning';
-                }
-                
-                if (tempoRestante <= 0) {
-                    pararBarraProgresso();
-                    // Não chamar handleTimeOut diretamente
-                }
-            }, 1000);
-        }
-
-        // Função para tocar som quando continuar
-        function tocarSomContinuacao() {
-            if (!soundEnabled || !audioContext || pauseReason === 'tutorial') return;
-            
-            try {
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume();
-                }
-                
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // Dó5
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.1);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.2);
-            } catch (e) {
-                console.log("Erro ao tocar som de continuação");
-            }
-        }
-
-        // Função para mostrar mensagem de pausa
-        function mostrarMensagemPausa() {
-            const container = document.getElementById('notation');
-            container.innerHTML = '';
-            
-            const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
-            const width = Math.min(window.innerWidth - 60, 600);
-            renderer.resize(width, 120);
-            const context = renderer.getContext();
-            
-            const staveWidth = width - 55;
-            const stave = new Vex.Flow.Stave(50, 20, staveWidth);
-            stave.addClef(getClefName(Clave));
-            stave.setContext(context).draw();
-            
-            // Adicionar texto "PAUSADO" sobre o pentagrama
-            const svg = container.querySelector('svg');
-            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            
-            text.setAttribute('x', width / 2);
-            text.setAttribute('y', 70);
-            text.setAttribute('text-anchor', 'middle');
-            text.setAttribute('font-size', '40');
-            text.setAttribute('font-weight', 'bold');
-            text.setAttribute('fill', '#FF9800');
-            
-            text.textContent = '⏸️ PAUSADO';
-            svg.appendChild(text);
-        }
-
-        // Função para esconder mensagem de pausa
-        function esconderMensagemPausa() {
-            // Restaurar a nota original
-            if (notaEscolhida) {
                 createNotation(notaEscolhida);
             }
-            
-            // Esconder o nome da nota se não for modo iniciante
-            if (!modoIniciante || !mostrarNomeNota) {
-                document.getElementById('nomeNota').style.display = 'none';
-            }
         }
-
-        // Função unificada para pausar o jogo
-        function pauseGame(reason) {
-            if (gameOver || gamePaused) return;
-            
-            gamePaused = true;
-            pauseReason = reason;
-            pauseStartTime = Date.now();
-            
-            // Parar COMPLETAMENTE o timer principal
-            if (timer) {
-                clearInterval(timer);
-                timer = null;
-            }
-            
-            // Parar a barra de progresso
-            pararBarraProgresso();
-            
-            // Salvar o estado atual do tempo
-            const progressBar = document.getElementById('progressBar');
-            remainingPauseTime = parseFloat(progressBar.style.width) || 100;
-            
-            // Desativar botões de nota
-            const noteButtons = document.querySelectorAll('.notes-grid .note-btn');
-            noteButtons.forEach(btn => {
-                btn.style.pointerEvents = 'none';
-                btn.style.opacity = '0.5';
-                btn.disabled = true;
-            });
-            
-            // Se for pausa do usuário, mostrar mensagem
-            if (reason === 'user') {
-                mostrarMensagemPausa();
-                const pauseBtn = document.getElementById('pauseBtn');
-                pauseBtn.innerHTML = '▶️';
-                pauseBtn.classList.add('pause-active');
-                pauseBtn.title = 'Continuar';
-            }
-            
-            // Se for pausa do tutorial, garantir que o botão do tutorial funcione
-            if (reason === 'tutorial') {
-                // Garantir que o botão do tutorial modal funcione
-                setTimeout(() => {
-                    const tutorialBtn = document.querySelector('.tutorial-btn');
-                    if (tutorialBtn) {
-                        tutorialBtn.style.pointerEvents = 'auto';
-                        tutorialBtn.disabled = false;
-                    }
-                }, 100);
-            }
-            
-            // Manter botões de controle ativos (clave, pause, stop)
-            document.querySelectorAll('.timer-box .note-btn').forEach(btn => {
-                if (btn.id.includes('clave') || btn.id === 'pauseBtn' || btn.onclick.toString().includes('showGameOver')) {
-                    btn.style.pointerEvents = 'auto';
-                    btn.disabled = false;
-                }
-            });
-            
-        }
-
-        // Função unificada para continuar o jogo
-        function continueGame() {
-            if (!gamePaused) return;
-
-            const pauseEndTime = Date.now();
-            const pauseDuration = pauseEndTime - pauseStartTime;
-            
-            // Se for pausa do usuário, restaurar botão
-            if (pauseReason === 'user') {
-                const pauseBtn = document.getElementById('pauseBtn');
-                pauseBtn.innerHTML = '⏸️';
-                pauseBtn.classList.remove('pause-active');
-                pauseBtn.title = 'Suspender';
-            }
-            
-            // Reativar botões de nota
-            const noteButtons = document.querySelectorAll('.notes-grid .note-btn');
-            noteButtons.forEach(btn => {
-                btn.style.pointerEvents = 'auto';
-                btn.style.opacity = '1';
-                btn.disabled = false;
-            });
-            
-            // Esconder mensagem de pausa
-            if (pauseReason === 'user') {
-                esconderMensagemPausa();
-            }
-            
-            // Reativar estado do jogo
-            gameActive = true;
-            gamePaused = false;
-            
-            // Ajustar tempo restante baseado na pausa
-            timeLeft = Math.max(1, timeLeft - Math.floor(pauseDuration / 1000));
-            
-            // Recriar timer principal APENAS se não houver timer ativo
-            if (!timer) {
-                timer = setInterval(updateTimer, 1000);
-            }
-            
-            // Recriar barra de progresso com tempo ajustado
-            resetarBarraProgresso();
-            iniciarBarraProgressoComTempo(timeLeft);
-            
-            // Tocar som de continuação apenas para pausa do usuário
-            if (soundEnabled && pauseReason === 'user') {
-                tocarSomContinuacao();
-            }
-            
-            // Reposicionar nome da nota se necessário
-            if (modoIniciante && mostrarNomeNota && notaEscolhida && pauseReason !== 'tutorial') {
-                const indice = escala.findIndex(item => item[0] === notaEscolhida.toUpperCase().replace("/", ""));
-                if (indice !== -1) {
-                    const notaAtual = noteNames[escala[indice][0].substring(0, 1)];
-                    document.getElementById('nomeNota').textContent = notaAtual;
-                    posicionarSobreNota(indice);
-                }
-            }
-            
-            pauseReason = '';
-        }
-
-        function createNotation(noteKey, mostrarNota = true) {
-            try {
-                const container = document.getElementById('notation');
-                container.innerHTML = '';
-                
-                if (!mostrarNota) {
-                    // Pentagrama vazio
-                    const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
-const width = Math.min(window.innerWidth - 20, 600);  // Mais largura
-                    renderer.resize(width, 70);
-                    const context = renderer.getContext();
-const staveWidth = width - 55;                        // Menos margem
-                    
-                    const stave = new Vex.Flow.Stave(50, 12, staveWidth);
-                    stave.addClef(getClefName(Clave));
-                    stave.setContext(context).draw();
-                    return;
-                }
-                
-                const renderer = new Vex.Flow.Renderer(container, Vex.Flow.Renderer.Backends.SVG);
-const width = Math.min(window.innerWidth - 20, 600);  // Mais largura
-                renderer.resize(width, 120);
-                const context = renderer.getContext();
-                const staveWidth = width - 55;                        // Menos margem
-                
-                const stave = new Vex.Flow.Stave(50, 20, staveWidth);
-                stave.addClef(getClefName(Clave));
-                stave.setContext(context).draw();
-                
-                const note = new Vex.Flow.StaveNote({
-                    keys: [noteKey],
-                    duration: 'w'
-                });
-                
-                const voice = new Vex.Flow.Voice({
-                    num_beats: 1,
-                    beat_value: 1,
-                    resolution: Vex.Flow.RESOLUTION
-                });
-                
-                voice.addTickables([note]);
-                
-                new Vex.Flow.Formatter()
-                    .joinVoices([voice])
-                    .format([voice], staveWidth - 20);
-                
-                voice.draw(context, stave);
-                
-            } catch (error) {
-                console.error('Erro ao criar notação:', error);
-            }
-        }
-
-// Forçar que o viewport seja sempre tratado como landscape
-function forceLandscapeView() {
-    if (window.innerHeight > window.innerWidth) {
-        // Está em modo retrato, forçar rotação visual
-        document.body.classList.add('portrait-mode');
-    } else {
-        document.body.classList.remove('portrait-mode');
-    }
-}
-
-// Chamar ao carregar e ao redimensionar
-window.addEventListener('load', forceLandscapeView);
-window.addEventListener('resize', forceLandscapeView);
         
+        function toggleModoIniciante(ativado) {
+            modoIniciante = ativado;
+            if (ativado) {
+                sequenciaAtual = ['e/4','g/4','b/4','d/5','f/5'];
+                indiceSequencia = 0;
+            }
+        }
+        
+        function showToast(msg) {
+            document.getElementById('shareToast').textContent = msg;
+            document.getElementById('shareToast').style.display = 'block';
+            setTimeout(() => document.getElementById('shareToast').style.display = 'none', 3000);
+        }
+        
+        function shareResults() {
+            const texto = `🎵 Treino Musical - Acertos: ${score}, Erros: ${errors}`;
+            if (navigator.share) navigator.share({ title: 'Treino Musical', text: texto });
+            else {
+                navigator.clipboard.writeText(texto);
+                showToast('Resultado copiado!');
+            }
+        }
+        
+        function closeTutorial() {
+            document.getElementById('tutorialModal').style.display = 'none';
+            tutorialAtivo = false;
+            continueGame();
+        }
+        
+        function setupKeyboard() {
+            document.addEventListener('keydown', (e) => {
+                if (gameOver || !gameActive) return;
+                const map = { '1':'C','2':'D','3':'E','4':'F','5':'G','6':'A','7':'B','c':'C','d':'D','e':'E','f':'F','g':'G','a':'A','b':'B' };
+                if (map[e.key]) checkAnswer(map[e.key]);
+                else if (e.key === ' ' || e.key === 'Enter') nextNote();
+                else if (e.key === 'Escape') showGameOver();
+                else if (e.key === 'f') toggleFullscreen();
+            });
+        }
     </script>
 </body>
 </html>
