@@ -2,16 +2,16 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+   
     <!-- Favicon padrão (para abas do navegador) -->
     <link rel="icon" type="image/png" href="logo-192.png">
     
-    <!-- Ícones e configurações para iPhone/iOS -->
+    <meta name="apple-mobile-web-app-title" content="Treino Musical">
+
     <link rel="apple-touch-icon" href="logo-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Escala">
     <link rel="manifest" href="manifest.json">
     <title>🎵 Treino Musical</title>
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.4/build/cjs/vexflow.js"></script>
@@ -23,49 +23,49 @@
             -webkit-tap-highlight-color: transparent;
         }
         
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            min-height: 100vh;
-            transform: rotate(0deg);
-        }
-        
-        /* Forçar orientação paisagem */
-        @media screen and (orientation: portrait) {
-            body::before {
-                content: "📱 Gire seu celular para horizontal";
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.5em;
-                text-align: center;
-                padding: 20px;
-                z-index: 1000;
-                font-weight: bold;
-            }
-            
-            .container {
-                display: none;
-            }
-        }
+/* REMOVA TODO O CÓDIGO ANTERIOR DE ORIENTAÇÃO e COLOQUE ISTO: */
+
+/* Forçar conteúdo sempre na horizontal */
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Container principal que será rotacionado */
+.rotated-content {
+    position: absolute;
+    width: 100vh;  /* Altura da tela vira largura */
+    height: 100vw; /* Largura da tela vira altura */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(90deg); /* Rotaciona 90 graus */
+    transform-origin: center center;
+    overflow: hidden;
+}
+
+/* Ajustes para quando o celular já está na horizontal */
+@media screen and (orientation: landscape) {
+    .rotated-content {
+        width: 100vw;
+        height: 100vh;
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+}
+
+/* Garantir que tudo dentro fique visível */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}        
+
+
         
         .container {
             width: 100%;
@@ -711,6 +711,41 @@
     transform: scale(1.05);
 }
 
+/* Ajustar botões flutuantes para a rotação */
+.fullscreen-btn, .sound-btn {
+    position: fixed;
+    z-index: 1001;
+    /* Manter na posição correta independente da rotação */
+}
+
+.fullscreen-btn {
+    top: 10px;
+    right: 10px;
+}
+
+.sound-btn {
+    top: 70px;
+    right: 10px;
+}
+
+/* Quando em modo retrato (conteúdo rotacionado), ajustar botões */
+@media screen and (orientation: portrait) {
+    .fullscreen-btn, .sound-btn {
+        transform: rotate(90deg); /* Rotacionar botões de volta ao normal */
+        transform-origin: center center;
+    }
+    
+    .fullscreen-btn {
+        top: 10px;
+        right: 10px;
+    }
+    
+    .sound-btn {
+        top: 70px;
+        right: 10px;
+    }
+}
+
 </style>
 
 
@@ -726,61 +761,63 @@
     <button class="sound-btn" id="soundBtn" title="Ativar/Desativar Som">
         🔊
     </button>
-    <div class="container">
-        <div class="game-area">
-            <div class="pentagrama-container" style="gap: 2%;">
-                <div id="claveSOL" style="display: none; cursor: pointer;margin-top: 3%; vertical-align: auto; border: 1px solid #0a0321; font-size: 60px" onclick="MudaClave(this.id)">𝄞</div>
-                <div id="claveFA" style="display: block; cursor: pointer;margin-top: 3%; vertical-align: auto; border: 1px solid #0a0321; font-size: 60px" onclick="MudaClave(this.id)">𝄢</div>
-                <div id="claveDO" style="display: block; cursor: pointer;margin-top: 3%; vertical-align: auto; border: 1px solid #0a0321; font-size: 60px" onclick="MudaClave(this.id)">𝄡</div>
-                <div id="notation"></div>
-            </div>
-            
-            <div style="position: absolute; top:8%; left:30%; text-align: left; width: 20%;">
-                <div class="progress-container" style="top: 50%; width: 100%; border: 1px solid #0a0321;">
-                    <div id="progressBar" class="progress-bar" style="width: 100%;"></div>
+    <div class="rotated-content">
+        <div class="container">
+            <div class="game-area">
+                <div class="pentagrama-container" style="gap: 2%;">
+                    <div id="claveSOL" style="display: none; cursor: pointer;margin-top: 3%; vertical-align: auto; border: 1px solid #0a0321; font-size: 60px" onclick="MudaClave(this.id)">𝄞</div>
+                    <div id="claveFA" style="display: block; cursor: pointer;margin-top: 3%; vertical-align: auto; border: 1px solid #0a0321; font-size: 60px" onclick="MudaClave(this.id)">𝄢</div>
+                    <div id="claveDO" style="display: block; cursor: pointer;margin-top: 3%; vertical-align: auto; border: 1px solid #0a0321; font-size: 60px" onclick="MudaClave(this.id)">𝄡</div>
+                    <div id="notation"></div>
                 </div>
-            </div>
-            <div style="position: absolute; top:5%; left:4%; text-align: left;">
-                <div style="font-size: 1.2em; font-weight: bold;">Pontos::
-                    <span id="Acertos"><b>0</b></span>
-                </div>
-            </div>
-            <div style="position: absolute; top:5%; left:70%; text-align: left;">
-                <div style="font-size: 1.2em; font-weight: bold;">Erros: 
-                    <span id="erro1" class="mostra-erro">❌</span>
-                    <span id="erro2" class="mostra-erro">❌</span>
-                    <span id="erro3" class="mostra-erro">❌</span>
-                    <span id="erro4" class="mostra-erro">❌</span>
-                    <span id="erro5" class="mostra-erro">❌</span>
-                </div>
-            </div>
-            
-            <!-- Controles do modo iniciante -->
-            <div style="position: absolute; top:8%; left:55%; text-align: left; width: 40%;">
-                <div class="modo-iniciante-controls">
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="modoIniciante" onchange="toggleModoIniciante(this.checked)" style="transform: scale(1.2);">
-                        <label for="modoIniciante">🎓 Modo Iniciante</label>
+                
+                <div style="position: absolute; top:8%; left:30%; text-align: left; width: 20%;">
+                    <div class="progress-container" style="top: 50%; width: 100%; border: 1px solid #0a0321;">
+                        <div id="progressBar" class="progress-bar" style="width: 100%;"></div>
                     </div>
                 </div>
-            </div>                    
-            
-            <div class="notes-grid">
-                <button class="note-btn note-sol" onclick="checkAnswer('C')">Dó</button>
-                <button class="note-btn note-sol" onclick="checkAnswer('D')">Ré</button>
-                <button class="note-btn note-sol" onclick="checkAnswer('E')">Mi</button>
-                <button class="note-btn note-sol" onclick="checkAnswer('F')">Fá</button>
-                <button class="note-btn note-sol" onclick="checkAnswer('G')">Sol</button>
-                <button class="note-btn note-sol" onclick="checkAnswer('A')">Lá</button>
-                <button class="note-btn note-sol" onclick="checkAnswer('B')">Si</button>
-            </div>
+                <div style="position: absolute; top:5%; left:4%; text-align: left;">
+                    <div style="font-size: 1.2em; font-weight: bold;">Pontos:
+                        <span id="Acertos"><b>0</b></span>
+                    </div>
+                </div>
+                <div style="position: absolute; top:5%; left:70%; text-align: left;">
+                    <div style="font-size: 1.2em; font-weight: bold;">Erros: 
+                        <span id="erro1" class="mostra-erro">❌</span>
+                        <span id="erro2" class="mostra-erro">❌</span>
+                        <span id="erro3" class="mostra-erro">❌</span>
+                        <span id="erro4" class="mostra-erro">❌</span>
+                        <span id="erro5" class="mostra-erro">❌</span>
+                    </div>
+                </div>
+                
+                <!-- Controles do modo iniciante -->
+                <div style="position: absolute; top:8%; left:55%; text-align: left; width: 40%;">
+                    <div class="modo-iniciante-controls">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="modoIniciante" onchange="toggleModoIniciante(this.checked)" style="transform: scale(1.2);">
+                            <label for="modoIniciante">🎓 Modo Iniciante</label>
+                        </div>
+                    </div>
+                </div>                    
+                
+                <div class="notes-grid">
+                    <button class="note-btn note-sol" onclick="checkAnswer('C')">Dó</button>
+                    <button class="note-btn note-sol" onclick="checkAnswer('D')">Ré</button>
+                    <button class="note-btn note-sol" onclick="checkAnswer('E')">Mi</button>
+                    <button class="note-btn note-sol" onclick="checkAnswer('F')">Fá</button>
+                    <button class="note-btn note-sol" onclick="checkAnswer('G')">Sol</button>
+                    <button class="note-btn note-sol" onclick="checkAnswer('A')">Lá</button>
+                    <button class="note-btn note-sol" onclick="checkAnswer('B')">Si</button>
+                </div>
 
-            <div class="timer-box" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 50%; border: 1px solid #0a0321;">
-                <!--<button class="note-btn note-mi clave-active" id="claveSOL" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄞</button>
-                <button class="note-btn note-mi" id="claveFA" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢</button>
-                <button class="note-btn note-mi" id="claveDO" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄡</button>-->
-                <button class="note-btn note-la" id="pauseBtn" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="togglePause()">⏸️</button>
-                <button class="note-btn note-la" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="showGameOver();">⏹️</button>
+                <div class="timer-box" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 50%; border: 1px solid #0a0321;">
+                    <!--<button class="note-btn note-mi clave-active" id="claveSOL" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄞</button>
+                    <button class="note-btn note-mi" id="claveFA" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢</button>
+                    <button class="note-btn note-mi" id="claveDO" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄡</button>-->
+                    <button class="note-btn note-la" id="pauseBtn" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="togglePause()">⏸️</button>
+                    <button class="note-btn note-la" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="showGameOver();">⏹️</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2522,6 +2559,20 @@ const width = Math.min(window.innerWidth - 20, 600);  // Mais largura
             }
         }
 
+// Forçar que o viewport seja sempre tratado como landscape
+function forceLandscapeView() {
+    if (window.innerHeight > window.innerWidth) {
+        // Está em modo retrato, forçar rotação visual
+        document.body.classList.add('portrait-mode');
+    } else {
+        document.body.classList.remove('portrait-mode');
+    }
+}
+
+// Chamar ao carregar e ao redimensionar
+window.addEventListener('load', forceLandscapeView);
+window.addEventListener('resize', forceLandscapeView);
+        
     </script>
 </body>
 </html>
