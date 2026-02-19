@@ -16,14 +16,12 @@
     <title>🎵 Treino Musical</title>
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.4/build/cjs/vexflow.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-/* REMOVA TODO O CÓDIGO ANTERIOR DE ORIENTAÇÃO e COLOQUE ISTO: */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 
 /* Forçar conteúdo sempre na horizontal */
 html, body {
@@ -42,11 +40,11 @@ html, body {
 /* Container principal que será rotacionado */
 .rotated-content {
     position: absolute;
-    width: 100vh;  /* Altura da tela vira largura */
-    height: 100vw; /* Largura da tela vira altura */
+    width: 100vh;
+    height: 100vw;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(90deg); /* Rotaciona 90 graus */
+    transform: translate(-50%, -50%) rotate(90deg);
     transform-origin: center center;
     overflow: hidden;
 }
@@ -63,545 +61,492 @@ html, body {
 /* Garantir que tudo dentro fique visível */
 body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}        
+}
 
+.container {
+    width: 100%;
+    max-width: 800px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
 
-        
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        
-        h1 {
-            font-size: 1.8em;
-            color: #333;
-            margin-bottom: 5px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .subtitle {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-        
-        .game-area {
-            width: 100%;
-        }
-        
-        .pentagrama-container {
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 15px;
-            min-height: 110px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        #notation {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            min-height: 85px;
-        }
-        
-        .timer-section {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #f0f2ff;
-            border-radius: 8px;
-        }
-        
-        .timer-box {
-            width: 80%; 
-            min-width: 100px; 
-            border: 1px solid #0a0321; 
-            display: flex; 
-            box-sizing: border-box;
-        }
-        
-        .timer {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #667eea;
-            font-family: 'Courier New', monospace;
-            line-height: 1;
-        }
-        
-        .notes-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .note-btn {
-            height: 60px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.3em;
-            font-weight: bold;
-            cursor: pointer;
-            color: white;
-            transition: all 0.2s;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 5px;
-        }
-        
-        .note-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .note-do { background: linear-gradient(45deg, #FF6B6B, #FF8E8E); }
-        .note-re { background: linear-gradient(45deg, #4ECDC4, #44A08D); }
-        .note-mi { background: linear-gradient(45deg, #FFD166, #FFB347); }
-        .note-fa { background: linear-gradient(45deg, #06D6A0, #06A678); }
-        .note-sol { background: linear-gradient(45deg, #118AB2, #0A6C8F); }
-        .note-la { background: linear-gradient(45deg, #EF476F, #D43A5E); }
-        .note-si { background: linear-gradient(45deg, #9D4EDD, #7B2CBF); }
-        
-        .mostra-erro {
-            opacity: 0.5; 
-            filter: grayscale(100%)
-        }
+.header {
+    text-align: center;
+    margin-bottom: 15px;
+}
 
-        /* Botão de tela cheia */
-        .fullscreen-btn {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.5em;
-            cursor: pointer;
-            z-index: 1001;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-        
-        .fullscreen-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .fullscreen-btn:active {
-            transform: scale(0.95);
-        }
+h1 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 5px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-        /* Botão de som */
-        .sound-btn {
-            position: fixed;
-            top: 70px;
-            right: 10px;
-            background: linear-gradient(45deg, #06D6A0, #06A678);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.5em;
-            cursor: pointer;
-            z-index: 1001;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-        
-        .sound-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .sound-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .sound-off {
-            background: linear-gradient(45deg, #EF476F, #D43A5E) !important;
-        }
+.subtitle {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
 
-        /* ADICIONE ESTES ESTILOS */
-        .progress-container {
-            width: 80%;
-            height: 10px;
-            background: #f0f0f0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 8px;
-            border: 1px solid #ddd;
-        }
+.game-area {
+    width: 100%;
+}
 
-        .progress-bar {
-            height: 100%;
-            width: 80%;
-            background: #4CAF50;
-            border-radius: 5px;
-            transition: width 1s linear;
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-        }
+.pentagrama-container {
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    min-height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
 
-        .progress-bar.warning {
-            background: #FF9800;
-            box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
-        }
+#notation {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    min-height: 85px;
+}
 
-        .progress-bar.danger {
-            background: #F44336;
-            box-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
-            animation: pulse 0.5s infinite alternate;
-        }
+.timer-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f0f2ff;
+    border-radius: 8px;
+}
 
-        @keyframes pulse {
-            from { opacity: 1; }
-            to { opacity: 0.7; }
-        }
+.timer-box {
+    width: 80%; 
+    min-width: 100px; 
+    border: 1px solid #0a0321; 
+    display: flex; 
+    box-sizing: border-box;
+}
 
-        /* Botões de clave ativos */
-        .clave-active {
-            //background: linear-gradient(45deg, #FFD166, #FFB347) !important;
-            //border: 3px solid #333 !important;
-            //transform: scale(1.05);
-            display: none
-        }
-        
-        /* Modal de Game Over */
-        .game-over-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease-out;
-        }
+.timer {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #667eea;
+    font-family: 'Courier New', monospace;
+    line-height: 1;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
 
-        .game-over-content {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.4s ease-out;
-            position: relative;
-        }
+.note-btn {
+    height: 60px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    transition: all 0.2s;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.note-btn:active {
+    transform: scale(0.95);
+}
 
-        .game-over-title {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #EF476F;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
+.note-do { background: linear-gradient(45deg, #FF6B6B, #FF8E8E); }
+.note-re { background: linear-gradient(45deg, #4ECDC4, #44A08D); }
+.note-mi { background: linear-gradient(45deg, #FFD166, #FFB347); }
+.note-fa { background: linear-gradient(45deg, #06D6A0, #06A678); }
+.note-sol { background: linear-gradient(45deg, #118AB2, #0A6C8F); }
+.note-la { background: linear-gradient(45deg, #EF476F, #D43A5E); }
+.note-si { background: linear-gradient(45deg, #9D4EDD, #7B2CBF); }
 
-        .game-over-message {
-            font-size: 1.1em;
-            color: #666;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
+.mostra-erro {
+    opacity: 0.5; 
+    filter: grayscale(100%)
+}
 
-        .game-over-stats {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 2px solid #e9ecef;
-        }
+/* Botão de tela cheia e som - posicionamento consolidado */
+.fullscreen-btn, .sound-btn {
+    position: fixed;
+    z-index: 1001;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
 
-        .modal-btn {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 10px;
-        }
+.fullscreen-btn {
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
 
-        .modal-btn:active {
-            transform: scale(0.98);
-        }
+.sound-btn {
+    top: 70px;
+    right: 10px;
+    background: linear-gradient(45deg, #06D6A0, #06A678);
+}
 
-        .restart-btn {
-            background: linear-gradient(45deg, #06D6A0, #06A678);
-            color: white;
-            box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3);
-        }
+.fullscreen-btn:hover, .sound-btn:hover {
+    transform: scale(1.1);
+}
 
-        .restart-btn:hover {
-            background: linear-gradient(45deg, #05c090, #059068);
-        }
+.fullscreen-btn:active, .sound-btn:active {
+    transform: scale(0.95);
+}
 
-        .close-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
+.sound-off {
+    background: linear-gradient(45deg, #EF476F, #D43A5E) !important;
+}
 
-        .close-btn:hover {
-            background: linear-gradient(45deg, #5a6fd8, #6a419f);
-        }
+/* Quando em modo retrato (conteúdo rotacionado), ajustar botões */
+@media screen and (orientation: portrait) {
+    .fullscreen-btn, .sound-btn {
+        transform: rotate(90deg);
+        transform-origin: center center;
+    }
+}
 
-        .share-btn {
-            background: linear-gradient(45deg, #3b5998, #4267B2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(59, 89, 152, 0.3);
-        }
+.progress-container {
+    width: 80%;
+    height: 10px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+}
 
-        .share-btn:hover {
-            background: linear-gradient(45deg, #344e86, #3b5998);
-        }
-        
-        /* Toast de compartilhamento */
-        .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 1002;
-            animation: slideDown 0.3s ease-out;
-            display: none;
-        }
+.progress-bar {
+    height: 100%;
+    width: 80%;
+    background: #4CAF50;
+    border-radius: 5px;
+    transition: width 1s linear;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
+.progress-bar.warning {
+    background: #FF9800;
+    box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
+}
 
-        /* Estilos para tela cheia */
-        :fullscreen .container {
-            border-radius: 0;
-            padding: 20px;
-            max-width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        :-webkit-full-screen .container {
-            border-radius: 0;
-            padding: 20px;
-            max-width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        :-moz-full-screen .container {
-            border-radius: 0;
-            padding: 20px;
-            max-width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        :fullscreen .game-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        
-        :-webkit-full-screen .game-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        
-        /* Ajustes para telas menores em modo paisagem */
-        @media screen and (max-height: 600px) and (orientation: landscape) {
-            .container {
-                padding: 10px;
-            }
-            
-            .pentagrama-container {
-                min-height: 80px;
-                margin-bottom: 10px;
-            }
-            
-            .notes-grid {
-                gap: 8px;
-                margin-bottom: 10px;
-            }
-            
-            .note-btn {
-                height: 50px;
-                font-size: 1.1em;
-            }
-            
-            .timer-section {
-                margin-bottom: 10px;
-                padding: 8px;
-            }
-        }
-        
-        /* Modal de ativação de som para iOS */
-        .sound-activation-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1002;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease-out;
-        }
+.progress-bar.danger {
+    background: #F44336;
+    box-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
+    animation: pulse 0.5s infinite alternate;
+}
 
-        .sound-activation-content {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.4s ease-out;
-        }
+@keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.7; }
+}
 
-        .sound-activation-title {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 15px;
-        }
+/* Botões de clave ativos - removido display:none desnecessário */
 
-        .sound-activation-message {
-            font-size: 1.1em;
-            color: #666;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
+/* Modal de Game Over */
+.game-over-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
 
-        .game-over-modal .fullscreen-btn,
-        .game-over-modal .sound-btn {
-            display: none !important;
-        }
-        
-        /* Controles do modo iniciante */
-        .modo-iniciante-controls {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .nivel-buttons {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-            margin-top: 5px;
-        }
-        
-        .nivel-btn {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            background: #667eea;
-            color: white;
-            font-size: 0.8em;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .nivel-btn:hover {
-            background: #5a6fd8;
-        }
-        
-        .nivel-btn.active {
-            background: #4CAF50;
-            font-weight: bold;
-        }
-        
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 5px;
-        }
-        
-        .checkbox-container label {
-            font-size: 1em;
-            font-weight: bold;
-            color: #333;
-            cursor: pointer;
-        }
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
 
-/* Adicione este CSS na seção de estilos */
+.game-over-content {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.4s ease-out;
+    position: relative;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.game-over-title {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #EF476F;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-over-message {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.game-over-stats {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 2px solid #e9ecef;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+}
+
+.modal-btn:active {
+    transform: scale(0.98);
+}
+
+.restart-btn {
+    background: linear-gradient(45deg, #06D6A0, #06A678);
+    color: white;
+    box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3);
+}
+
+.restart-btn:hover {
+    background: linear-gradient(45deg, #05c090, #059068);
+}
+
+.close-btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.close-btn:hover {
+    background: linear-gradient(45deg, #5a6fd8, #6a419f);
+}
+
+.share-btn {
+    background: linear-gradient(45deg, #3b5998, #4267B2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 89, 152, 0.3);
+}
+
+.share-btn:hover {
+    background: linear-gradient(45deg, #344e86, #3b5998);
+}
+
+/* Toast de compartilhamento */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1002;
+    animation: slideDown 0.3s ease-out;
+    display: none;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Estilos para tela cheia */
+:fullscreen .container {
+    border-radius: 0;
+    padding: 20px;
+    max-width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+:-webkit-full-screen .container {
+    border-radius: 0;
+    padding: 20px;
+    max-width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+:-moz-full-screen .container {
+    border-radius: 0;
+    padding: 20px;
+    max-width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+:fullscreen .game-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+:-webkit-full-screen .game-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Ajustes para telas menores em modo paisagem */
+@media screen and (max-height: 600px) and (orientation: landscape) {
+    .container {
+        padding: 10px;
+    }
+    
+    .pentagrama-container {
+        min-height: 80px;
+        margin-bottom: 10px;
+    }
+    
+    .notes-grid {
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .note-btn {
+        height: 50px;
+        font-size: 1.1em;
+    }
+    
+    .timer-section {
+        margin-bottom: 10px;
+        padding: 8px;
+    }
+}
+
+/* Modal de ativação de som para iOS */
+.sound-activation-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1002;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.sound-activation-content {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.4s ease-out;
+}
+
+.sound-activation-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.sound-activation-message {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+/* Controles do modo iniciante */
+.modo-iniciante-controls {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.checkbox-container label {
+    font-size: 1em;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Modal de Tutorial */
 .tutorial-modal {
     display: none;
     position: fixed;
@@ -620,16 +565,15 @@ body {
     background: white;
     border-radius: 20px;
     padding: 30px;
-    width: 95%; /* Usa mais espaço */
-    max-width: min(550px, 90vw); /* Limita mas usa viewport */
-    max-height: 85vh; /* Limita altura */
-    overflow-y: auto; /* Permite rolagem se necessário */
+    width: 95%;
+    max-width: min(550px, 90vw);
+    max-height: 85vh;
+    overflow-y: auto;
     text-align: center;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
     animation: slideUp 0.4s ease-out;
 }
 
-/* Para telas maiores */
 @media (min-width: 768px) {
     .tutorial-content {
         padding: 40px;
@@ -645,7 +589,6 @@ body {
     }
 }
 
-/* Para telas muito pequenas */
 @media (max-width: 480px) {
     .tutorial-content {
         padding: 20px;
@@ -711,39 +654,9 @@ body {
     transform: scale(1.05);
 }
 
-/* Ajustar botões flutuantes para a rotação */
-.fullscreen-btn, .sound-btn {
-    position: fixed;
-    z-index: 1001;
-    /* Manter na posição correta independente da rotação */
-}
-
-.fullscreen-btn {
-    top: 10px;
-    right: 10px;
-}
-
-.sound-btn {
-    top: 70px;
-    right: 10px;
-}
-
-/* Quando em modo retrato (conteúdo rotacionado), ajustar botões */
-@media screen and (orientation: portrait) {
-    .fullscreen-btn, .sound-btn {
-        transform: rotate(90deg); /* Rotacionar botões de volta ao normal */
-        transform-origin: center center;
-    }
-    
-    .fullscreen-btn {
-        top: 10px;
-        right: 10px;
-    }
-    
-    .sound-btn {
-        top: 70px;
-        right: 10px;
-    }
+/* Toast específico para "Agora é com você" */
+#agoraComVoceToast {
+    background: #FF9800;
 }
 
 </style>
@@ -812,9 +725,6 @@ body {
                 </div>
 
                 <div class="timer-box" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 50%; border: 1px solid #0a0321;">
-                    <!--<button class="note-btn note-mi clave-active" id="claveSOL" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄞</button>
-                    <button class="note-btn note-mi" id="claveFA" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄢</button>
-                    <button class="note-btn note-mi" id="claveDO" style="width: 6%; font-size: 30px; font-weight: bold; color: black;" onclick="MudaClave(this.id)">𝄡</button>-->
                     <button class="note-btn note-la" id="pauseBtn" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="togglePause()">⏸️</button>
                     <button class="note-btn note-la" style="width: 33%; font-size: 30px; font-weight: bold; color: black;" onclick="showGameOver();">⏹️</button>
                 </div>
@@ -939,7 +849,16 @@ let pauseStartTime = 0;
 let remainingPauseTime = 0;
 let pauseReason = ''; // 'user' ou 'tutorial'
 let posTutorial = false;
-        
+
+// Constantes para localStorage
+const STORAGE_KEY = 'treinoMusical_save';
+const SAVE_VERSION = '1.0';
+
+// Variáveis de save automático
+let autoSaveEnabled = true;
+let saveInterval = null;
+const SAVE_INTERVAL = 30000; // Salvar a cada 30 segundos
+
         // Mapeamento de notas para cada clave
         const notasPorClave = {
             'SOL': { // Clave de Sol
@@ -1208,27 +1127,39 @@ const pontosTutorial = {
 
         
         // Inicializar o jogo
-        document.addEventListener('DOMContentLoaded', function() {
-            updateStats();
-            setupKeyboard();
-            setupFullscreen();
-            setupSound();
-            
-            // Verificar se é iOS e mostrar modal de ativação de som
-            if (isIOS() && !soundActivated) {
-                setTimeout(() => {
-                    document.getElementById('soundActivationModal').style.display = 'flex';
-                }, 1000);
-            } else {
-                nextNote();
-            }
-            
-            // Tentar entrar em tela cheia automaticamente em dispositivos móveis
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                setTimeout(enterFullscreen, 1000);
-            }
-        });
-        
+document.addEventListener('DOMContentLoaded', function() {
+    updateStats();
+    setupKeyboard();
+    setupFullscreen();
+    setupSound();
+    
+    // Iniciar save automático
+    startAutoSave();
+    
+    // Tentar carregar jogo salvo
+    const savedState = localStorage.getItem(STORAGE_KEY);
+    if (savedState) {
+        // Perguntar se quer carregar
+        setTimeout(() => {
+            showLoadModal();
+        }, 1000);
+    } else {
+        // Verificar se é iOS e mostrar modal de ativação de som
+        if (isIOS() && !soundActivated) {
+            setTimeout(() => {
+                document.getElementById('soundActivationModal').style.display = 'flex';
+            }, 1000);
+        } else {
+            nextNote();
+        }
+    }
+    
+    // Tentar entrar em tela cheia automaticamente em dispositivos móveis
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        setTimeout(enterFullscreen, 1000);
+    }
+});
+
         function isIOS() {
             return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         }
@@ -1623,38 +1554,40 @@ const pontosTutorial = {
             }
         }
                 
-        function showGameOver() {
-            // Pausar tudo primeiro
-            clearInterval(timer);
-            pararBarraProgresso();
-            gameActive = false;
-            gamePaused = true;
-            
-            // Resto da função permanece igual...
-            if (errors > 5) {
-                errors = 5;
-            }
-            
-            gameOver = true;
-            
-            document.getElementById('finalScore').textContent = score;
-            document.getElementById('finalErrors').textContent = errors;
-            document.getElementById('finalTotal').textContent = total;
-            
-            const claveNomes = {
-                'SOL': 'Sol',
-                'FA': 'Fá',
-                'DO': 'Dó'
-            };
-            document.getElementById('finalClave').textContent = claveNomes[Clave];
-            
-            const modoTexto = modoIniciante ? `Modo Iniciante (${nomesNiveis[nivelAtual]})` : 'Modo Normal';
-            document.getElementById('finalModo').textContent = modoTexto;
-            
-            document.getElementById('gameOverModal').style.display = 'flex';
-            
-            tocarSomGameOver();
-        }
+function showGameOver() {
+    // Pausar tudo primeiro
+    clearInterval(timer);
+    pararBarraProgresso();
+    gameActive = false;
+    gamePaused = true;
+    
+    if (errors > 5) {
+        errors = 5;
+    }
+    
+    gameOver = true;
+    
+    // Limpar save quando game over
+    localStorage.removeItem(STORAGE_KEY);
+    
+    document.getElementById('finalScore').textContent = score;
+    document.getElementById('finalErrors').textContent = errors;
+    document.getElementById('finalTotal').textContent = total;
+    
+    const claveNomes = {
+        'SOL': 'Sol',
+        'FA': 'Fá',
+        'DO': 'Dó'
+    };
+    document.getElementById('finalClave').textContent = claveNomes[Clave];
+    
+    const modoTexto = modoIniciante ? `Modo Iniciante (${nomesNiveis[nivelAtual]})` : 'Modo Normal';
+    document.getElementById('finalModo').textContent = modoTexto;
+    
+    document.getElementById('gameOverModal').style.display = 'flex';
+    
+    tocarSomGameOver();
+}
 
         function tocarSomGameOver() {
             if (!soundEnabled || !audioContext) return;
@@ -1722,55 +1655,66 @@ const pontosTutorial = {
             }
         }
                 
-        function restartGame() {
-            //score = 0;
-            //errors = 0;
-            //total = 0;
-            //streak = 0;
-            gameOver = false;
-            gamePaused = false;
-            pauseReason = '';
-            tutorialAtivo = false;
-            
-            // Resetar botão de pausa
-            const pauseBtn = document.getElementById('pauseBtn');
-            pauseBtn.innerHTML = '⏸️';
-            pauseBtn.classList.remove('pause-active');
-            pauseBtn.title = 'Suspender';
-            
-            // Reativar todos os botões
-            document.querySelectorAll('.note-btn').forEach(btn => {
-                btn.style.pointerEvents = 'auto';
-                btn.style.opacity = '1';
-                btn.disabled = false;
-            });
-            
-            for (let i = 1; i <= 5; i++) {
-                document.getElementById('erro' + i).classList.add('mostra-erro');
-            }
-
-            closeModal();
-            updateStats();
-            
-            // Esconder mensagem de pausa
-            document.getElementById('nomeNota').style.display = 'none';
-            
-            // Se for modo iniciante, mostrar tutorial inicial
-            if (modoIniciante) {
-                iniciarNivelIniciante('linhas');
-                
-                setTimeout(() => {
-                    mostrarModalTutorial("🎓 Vamos Aprender!", 
-                        "Vamos aprender as notas que aparecem nas <strong>LINHAS</strong> do pentagrama!<br><br>" +
-                        "Clique em 'Vamos lá!' para começar.");
-                }, 300);
-                
-                createNotation(null, false);
-            } else {
-                nextNote();
-            }
+function restartGame() {
+    // Opcional: perguntar se quer manter o save
+    if (localStorage.getItem(STORAGE_KEY)) {
+        if (confirm('Deseja manter o jogo salvo anteriormente?')) {
+            // Manter save
+        } else {
+            clearSavedGame();
         }
+    }
+    
+    score = 0;
+    errors = 0;
+    total = 0;
+    streak = 0;
+    gameOver = false;
+    gamePaused = false;
+    pauseReason = '';
+    tutorialAtivo = false;
+    
+    // Resetar botão de pausa
+    const pauseBtn = document.getElementById('pauseBtn');
+    pauseBtn.innerHTML = '⏸️';
+    pauseBtn.classList.remove('pause-active');
+    pauseBtn.title = 'Suspender';
+    
+    // Reativar todos os botões
+    document.querySelectorAll('.note-btn').forEach(btn => {
+        btn.style.pointerEvents = 'auto';
+        btn.style.opacity = '1';
+        btn.disabled = false;
+    });
+    
+    for (let i = 1; i <= 5; i++) {
+        document.getElementById('erro' + i).classList.add('mostra-erro');
+    }
 
+    closeModal();
+    updateStats();
+    
+    // Esconder mensagem de pausa
+    document.getElementById('nomeNota').style.display = 'none';
+    
+    // Salvar estado resetado (opcional)
+    saveGameState();
+    
+    // Se for modo iniciante, mostrar tutorial inicial
+    if (modoIniciante) {
+        iniciarNivelIniciante('linhas');
+        
+        setTimeout(() => {
+            mostrarModalTutorial("🎓 Vamos Aprender!", 
+                "Vamos aprender as notas que aparecem nas <strong>LINHAS</strong> do pentagrama!<br><br>" +
+                "Clique em 'Vamos lá!' para começar.");
+        }, 300);
+        
+        createNotation(null, false);
+    } else {
+        nextNote();
+    }
+}
         function closeModal() {
             document.getElementById('gameOverModal').style.display = 'none';
         }
@@ -2572,7 +2516,272 @@ function forceLandscapeView() {
 // Chamar ao carregar e ao redimensionar
 window.addEventListener('load', forceLandscapeView);
 window.addEventListener('resize', forceLandscapeView);
+
+// Função para salvar o estado do jogo
+function saveGameState() {
+    if (!autoSaveEnabled) return;
+    
+    try {
+        const gameState = {
+            version: SAVE_VERSION,
+            timestamp: Date.now(),
+            score: score,
+            errors: errors,
+            total: total,
+            streak: streak,
+            Clave: Clave,
+            modoIniciante: modoIniciante,
+            nivelAtual: nivelAtual,
+            indiceSequencia: indiceSequencia,
+            sequenciaAtual: sequenciaAtual,
+            mostrarNomeNota: mostrarNomeNota,
+            soundEnabled: soundEnabled,
+            // Salvar estatísticas adicionais
+            stats: {
+                totalAcertos: score,
+                totalErros: errors,
+                totalNotas: total,
+                melhorSequencia: streak
+            }
+        };
         
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
+        console.log('Jogo salvo automaticamente:', new Date().toLocaleTimeString());
+        
+        // Opcional: Mostrar indicador de save (pode remover se preferir)
+        // showToast('💾 Jogo salvo');
+    } catch (e) {
+        console.error('Erro ao salvar jogo:', e);
+    }
+}
+
+// Função para carregar o estado do jogo
+function loadGameState() {
+    alert("1")
+    try {
+        const savedState = localStorage.getItem(STORAGE_KEY);
+        
+        if (!savedState) {
+            console.log('Nenhum save encontrado');
+            return false;
+        }
+        
+        const gameState = JSON.parse(savedState);
+        
+        // Verificar versão do save
+        if (gameState.version !== SAVE_VERSION) {
+            console.log('Versão de save diferente, ignorando');
+            return false;
+        }
+        
+        // Verificar se o save é recente (últimas 24 horas)
+        const saveAge = Date.now() - gameState.timestamp;
+        const MAX_SAVE_AGE = 24 * 60 * 60 * 1000; // 24 horas
+        
+        if (saveAge > MAX_SAVE_AGE) {
+            console.log('Save muito antigo, ignorando');
+            localStorage.removeItem(STORAGE_KEY);
+            return false;
+        }
+        
+        // Restaurar estado
+        score = gameState.score || 0;
+        errors = gameState.errors || 0;
+        total = gameState.total || 0;
+        streak = gameState.streak || 0;
+        Clave = gameState.Clave || 'SOL';
+        modoIniciante = gameState.modoIniciante || false;
+        nivelAtual = gameState.nivelAtual || 'linhas';
+        indiceSequencia = gameState.indiceSequencia || 0;
+        sequenciaAtual = gameState.sequenciaAtual || [];
+        mostrarNomeNota = gameState.mostrarNomeNota !== undefined ? gameState.mostrarNomeNota : true;
+        soundEnabled = gameState.soundEnabled !== undefined ? gameState.soundEnabled : true;
+        
+        // Atualizar interface
+        updateStats();
+        updateSoundButton();
+        
+        // Atualizar checkboxes e botões
+        document.getElementById('modoIniciante').checked = modoIniciante;
+        
+        // Atualizar clave visual
+        const botoesClave = ['claveSOL', 'claveFA', 'claveDO'];
+        botoesClave.forEach(id => {
+            const btn = document.getElementById(id);
+            if (id === 'clave' + Clave) {
+                btn.style.display = 'none';
+            } else {
+                btn.style.display = 'block';
+            }
+        });
+        
+        // Se estava no modo iniciante, restaurar sequência
+        if (modoIniciante && sequenciaAtual.length > 0) {
+            // Verificar se precisa mostrar tutorial
+            const pontoTutorial = pontosTutorial[indiceSequencia];
+            if (pontoTutorial && pontoTutorial.titulo) {
+                setTimeout(() => {
+                    mostrarModalTutorial(pontoTutorial.titulo, pontoTutorial.mensagem);
+                }, 500);
+            }
+        }
+        
+        console.log('Jogo carregado com sucesso!');
+        showToast('🔄 Jogo carregado automaticamente');
+        
+        return true;
+    } catch (e) {
+        console.error('Erro ao carregar jogo:', e);
+        return false;
+    }
+}
+
+// Função para limpar o save
+function clearSavedGame() {
+    localStorage.removeItem(STORAGE_KEY);
+    showToast('🗑️ Save removido');
+}
+
+// Função para iniciar save automático
+function startAutoSave() {
+    if (saveInterval) {
+        clearInterval(saveInterval);
+    }
+    
+    saveInterval = setInterval(() => {
+        if (gameActive && !gamePaused && !gameOver) {
+            saveGameState();
+        }
+    }, SAVE_INTERVAL);
+}
+
+// Função para parar save automático
+function stopAutoSave() {
+    if (saveInterval) {
+        clearInterval(saveInterval);
+        saveInterval = null;
+    }
+}
+
+// Função para mostrar modal de carregamento
+function showLoadModal() {
+    const savedState = localStorage.getItem(STORAGE_KEY);
+    
+    if (!savedState) {
+        showToast('Nenhum jogo salvo encontrado');
+        return;
+    }
+    
+    try {
+        const gameState = JSON.parse(savedState);
+        const saveDate = new Date(gameState.timestamp);
+        const timeStr = saveDate.toLocaleTimeString();
+        const dateStr = saveDate.toLocaleDateString();
+        
+        const modalContent = `
+            <div class="game-over-content" style="max-width: 350px;">
+                <div class="game-over-title">🔄 Jogo Salvo</div>
+                <div class="game-over-stats" style="margin: 20px 0;">
+                    <div style="font-size: 0.9em; color: #666;">Encontramos um jogo salvo de:</div>
+                    <div style="font-size: 1.2em; margin: 10px 0;">${dateStr} às ${timeStr}</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                        <div>
+                            <div style="color: #666;">Acertos</div>
+                            <div style="font-size: 1.5em; color: #06D6A0;">${gameState.score || 0}</div>
+                        </div>
+                        <div>
+                            <div style="color: #666;">Erros</div>
+                            <div style="font-size: 1.5em; color: #EF476F;">${gameState.errors || 0}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px; color: #666;">
+                        Clave: ${gameState.Clave || 'SOL'}<br>
+                        Modo: ${gameState.modoIniciante ? 'Iniciante' : 'Normal'}
+                    </div>
+                </div>
+                <button class="modal-btn restart-btn" onclick="loadGameStateAndContinue()">
+                    ✅ Carregar Jogo
+                </button>
+                <button class="modal-btn close-btn" onclick="clearSavedGame(); this.closest('.game-over-modal').style.display='none';">
+                    🗑️ Descartar Save
+                </button>
+                <button class="modal-btn close-btn" onclick="this.closest('.game-over-modal').style.display='none';">
+                    ✕ Continuar Novo Jogo
+                </button>
+            </div>
+        `;
+        
+        const modal = document.getElementById('gameOverModal');
+        modal.innerHTML = modalContent;
+        modal.style.display = 'flex';
+        
+    } catch (e) {
+        console.error('Erro ao ler save:', e);
+        showToast('Erro ao ler jogo salvo');
+    }
+}
+
+// Função para carregar e continuar
+function loadGameStateAndContinue() {
+    if (loadGameState()) {
+        document.getElementById('gameOverModal').style.display = 'none';
+        
+        // Reiniciar o jogo com o estado carregado
+        gameOver = false;
+        gamePaused = false;
+        
+        // Atualizar erros visualmente
+        for (let i = 1; i <= 5; i++) {
+            const erro = document.getElementById('erro' + i);
+            if (i <= errors) {
+                erro.classList.remove('mostra-erro');
+            } else {
+                erro.classList.add('mostra-erro');
+            }
+        }
+        
+        // Gerar próxima nota
+        if (modoIniciante && sequenciaAtual.length > 0) {
+            if (indiceSequencia < sequenciaAtual.length) {
+                notaEscolhida = sequenciaAtual[indiceSequencia];
+                currentNote = mapaNotasParaLetras[notaEscolhida] || 'C';
+                createNotation(notaEscolhida);
+                
+                if (mostrarNomeNota) {
+                    const indice = escala.findIndex(item => item[0] === notaEscolhida.toUpperCase().replace("/", ""));
+                    if (indice !== -1) {
+                        const notaAtual = noteNames[escala[indice][0].substring(0, 1)];
+                        document.getElementById('nomeNota').textContent = notaAtual;
+                        posicionarSobreNota(indice);
+                    }
+                }
+            } else {
+                // Sequência completa, reiniciar
+                indiceSequencia = 0;
+                nextNote();
+            }
+        } else {
+            nextNote();
+        }
+        
+        showToast('✅ Jogo carregado com sucesso!');
+    }
+}
+
+// Salvar antes de fechar/recarregar a página
+window.addEventListener('beforeunload', function() {
+    if (gameActive && !gameOver) {
+        saveGameState();
+    }
+});
+
+// Salvar quando a página perder foco (opcional)
+window.addEventListener('blur', function() {
+    if (gameActive && !gamePaused && !gameOver) {
+        saveGameState();
+    }
+});
+
     </script>
 </body>
 </html>
