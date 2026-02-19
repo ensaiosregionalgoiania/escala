@@ -1452,6 +1452,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
                 
         function checkAnswer(userNote) {
+            saveGameState();
             // Verificar se o jogo está pausado
             if (gamePaused || gameOver || !gameActive || tutorialAtivo) return;
             
@@ -2557,7 +2558,6 @@ function saveGameState() {
 
 // Função para carregar o estado do jogo
 function loadGameState() {
-    alert("1")
     try {
         const savedState = localStorage.getItem(STORAGE_KEY);
         
