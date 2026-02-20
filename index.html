@@ -15,7 +15,7 @@
     <link rel="manifest" href="manifest.json">
     <title>🎵 Treino Musical</title>
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.4/build/cjs/vexflow.js"></script>
-    <style>
+<style>
 * {
     margin: 0;
     padding: 0;
@@ -23,82 +23,46 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Forçar conteúdo sempre na horizontal */
+/* Layout base - SEM rotação forçada */
 html, body {
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-/* Container principal que será rotacionado */
-.rotated-content {
-    position: absolute;
-    width: 100vh;
-    height: 100vw;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(90deg);
-    transform-origin: center center;
-    overflow: hidden;
-}
-
-/* Ajustes para quando o celular já está na horizontal */
-@media screen and (orientation: landscape) {
-    .rotated-content {
-        width: 100vw;
-        height: 100vh;
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-}
-
-/* Garantir que tudo dentro fique visível */
 body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 10px;
+}
+
+/* Container principal */
+.rotated-content {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .container {
     width: 100%;
-    max-width: 800px;
     background: white;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     padding: 20px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-}
-
-.header {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-h1 {
-    font-size: 1.8em;
-    color: #333;
-    margin-bottom: 5px;
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-    color: #666;
-    font-size: 0.9em;
-    margin-bottom: 10px;
 }
 
 .game-area {
     width: 100%;
 }
 
+/* Pentagrama */
 .pentagrama-container {
     background: #f8f9fa;
     border: 2px solid #e0e0e0;
@@ -109,7 +73,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    gap: 2%;
 }
 
 #notation {
@@ -119,32 +83,99 @@ h1 {
     min-height: 85px;
 }
 
-.timer-section {
+/* Stats */
+.stats-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-bottom: 15px;
+    align-items: center;
     padding: 10px;
     background: #f0f2ff;
     border-radius: 8px;
+    margin-bottom: 15px;
 }
 
-.timer-box {
-    width: 80%; 
-    min-width: 100px; 
-    border: 1px solid #0a0321; 
-    display: flex; 
-    box-sizing: border-box;
+.score-box, .errors-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.timer {
-    font-size: 2.5em;
+.stats-label {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.stats-value {
+    font-size: 1.4em;
     font-weight: bold;
     color: #667eea;
-    font-family: 'Courier New', monospace;
-    line-height: 1;
 }
 
+.mostra-erro {
+    opacity: 0.5; 
+    filter: grayscale(100%);
+    font-size: 1.2em;
+}
+
+/* Barra de progresso */
+.progress-section {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.progress-container {
+    width: 100%;
+    height: 10px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #4CAF50;
+    border-radius: 5px;
+    transition: width 1s linear;
+}
+
+.progress-bar.warning {
+    background: #FF9800;
+}
+
+.progress-bar.danger {
+    background: #F44336;
+    animation: pulse 0.5s infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.7; }
+}
+
+/* Claves */
+.claves-row {
+    display: flex;
+    gap: 5px;
+    margin-right: 10px;
+}
+
+.claves-row div {
+    font-size: 40px;
+    cursor: pointer;
+    border: 1px solid #0a0321;
+    border-radius: 5px;
+    padding: 5px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+}
+
+/* Botões das notas */
 .notes-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -180,12 +211,47 @@ h1 {
 .note-la { background: linear-gradient(45deg, #EF476F, #D43A5E); }
 .note-si { background: linear-gradient(45deg, #9D4EDD, #7B2CBF); }
 
-.mostra-erro {
-    opacity: 0.5; 
-    filter: grayscale(100%)
+/* Botões de controle */
+.controls-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
 }
 
-/* Botão de tela cheia e som - posicionamento consolidado */
+.controls-row .note-btn {
+    width: 120px;
+    height: 50px;
+    font-size: 24px;
+}
+
+/* Modo iniciante */
+.modo-iniciante-controls {
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 15px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-container input {
+    transform: scale(1.2);
+}
+
+.checkbox-container label {
+    font-size: 1em;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Botões flutuantes */
 .fullscreen-btn, .sound-btn {
     position: fixed;
     z-index: 1001;
@@ -215,65 +281,14 @@ h1 {
     background: linear-gradient(45deg, #06D6A0, #06A678);
 }
 
-.fullscreen-btn:hover, .sound-btn:hover {
-    transform: scale(1.1);
-}
-
-.fullscreen-btn:active, .sound-btn:active {
-    transform: scale(0.95);
-}
-
 .sound-off {
     background: linear-gradient(45deg, #EF476F, #D43A5E) !important;
 }
 
-/* Quando em modo retrato (conteúdo rotacionado), ajustar botões */
-@media screen and (orientation: portrait) {
-    .fullscreen-btn, .sound-btn {
-        transform: rotate(90deg);
-        transform-origin: center center;
-    }
-}
-
-.progress-container {
-    width: 80%;
-    height: 10px;
-    background: #f0f0f0;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-bottom: 8px;
-    border: 1px solid #ddd;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 80%;
-    background: #4CAF50;
-    border-radius: 5px;
-    transition: width 1s linear;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-}
-
-.progress-bar.warning {
-    background: #FF9800;
-    box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
-}
-
-.progress-bar.danger {
-    background: #F44336;
-    box-shadow: 0 0 5px rgba(244, 67, 54, 0.3);
-    animation: pulse 0.5s infinite alternate;
-}
-
-@keyframes pulse {
-    from { opacity: 1; }
-    to { opacity: 0.7; }
-}
-
-/* Botões de clave ativos - removido display:none desnecessário */
-
-/* Modal de Game Over */
-.game-over-modal {
+/* MODAIS - todos unificados */
+.game-over-modal,
+.sound-activation-modal,
+.tutorial-modal {
     display: none;
     position: fixed;
     top: 0;
@@ -281,27 +296,25 @@ h1 {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.85);
-    z-index: 1000;
+    z-index: 2000;
     align-items: center;
     justify-content: center;
-    animation: fadeIn 0.3s ease-out;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.game-over-content {
+.game-over-content,
+.sound-activation-content,
+.tutorial-content {
     background: white;
     border-radius: 20px;
     padding: 30px;
     width: 90%;
     max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
     text-align: center;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
     animation: slideUp 0.4s ease-out;
-    position: relative;
+    margin: 20px;
 }
 
 @keyframes slideUp {
@@ -315,19 +328,16 @@ h1 {
     }
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 .game-over-title {
     font-size: 2.2em;
     font-weight: bold;
     color: #EF476F;
     margin-bottom: 15px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.game-over-message {
-    font-size: 1.1em;
-    color: #666;
-    margin-bottom: 25px;
-    line-height: 1.5;
 }
 
 .game-over-stats {
@@ -357,34 +367,19 @@ h1 {
 .restart-btn {
     background: linear-gradient(45deg, #06D6A0, #06A678);
     color: white;
-    box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3);
-}
-
-.restart-btn:hover {
-    background: linear-gradient(45deg, #05c090, #059068);
 }
 
 .close-btn {
     background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-.close-btn:hover {
-    background: linear-gradient(45deg, #5a6fd8, #6a419f);
 }
 
 .share-btn {
     background: linear-gradient(45deg, #3b5998, #4267B2);
     color: white;
-    box-shadow: 0 4px 15px rgba(59, 89, 152, 0.3);
 }
 
-.share-btn:hover {
-    background: linear-gradient(45deg, #344e86, #3b5998);
-}
-
-/* Toast de compartilhamento */
+/* Toast */
 .toast {
     position: fixed;
     top: 20px;
@@ -395,9 +390,9 @@ h1 {
     padding: 15px 20px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    z-index: 1002;
-    animation: slideDown 0.3s ease-out;
+    z-index: 2000;
     display: none;
+    animation: slideDown 0.3s ease-out;
 }
 
 @keyframes slideDown {
@@ -411,28 +406,32 @@ h1 {
     }
 }
 
-/* Estilos para tela cheia */
+#agoraComVoceToast {
+    background: #FF9800;
+}
+
+/* Nota flutuante */
+.nota-flutuante {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    z-index: 1000;
+    display: none;
+    pointer-events: none;
+}
+
+/* Pause ativo */
+.pause-active {
+    background: linear-gradient(45deg, #FFD166, #FFB347) !important;
+    border: 3px solid #333 !important;
+    transform: scale(1.05);
+}
+
+/* Tela cheia */
 :fullscreen .container {
-    border-radius: 0;
-    padding: 20px;
-    max-width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-:-webkit-full-screen .container {
-    border-radius: 0;
-    padding: 20px;
-    max-width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-:-moz-full-screen .container {
     border-radius: 0;
     padding: 20px;
     max-width: 100%;
@@ -449,27 +448,18 @@ h1 {
     justify-content: space-between;
 }
 
-:-webkit-full-screen .game-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-/* Ajustes para telas menores em modo paisagem */
-@media screen and (max-height: 600px) and (orientation: landscape) {
-    .container {
-        padding: 10px;
+/* Responsividade */
+@media screen and (max-width: 600px) {
+    body {
+        padding: 5px;
     }
     
-    .pentagrama-container {
-        min-height: 80px;
-        margin-bottom: 10px;
+    .container {
+        padding: 15px;
     }
     
     .notes-grid {
-        gap: 8px;
-        margin-bottom: 10px;
+        gap: 5px;
     }
     
     .note-btn {
@@ -477,207 +467,44 @@ h1 {
         font-size: 1.1em;
     }
     
-    .timer-section {
-        margin-bottom: 10px;
-        padding: 8px;
+    .claves-row div {
+        font-size: 30px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .controls-row .note-btn {
+        width: 100px;
+        height: 45px;
+        font-size: 20px;
     }
 }
 
-/* Modal de ativação de som para iOS */
-.sound-activation-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 1002;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.3s ease-out;
+@media screen and (max-height: 600px) and (orientation: landscape) {
+    .container {
+        padding: 10px;
+    }
+    
+    .pentagrama-container {
+        min-height: 80px;
+    }
+    
+    .note-btn {
+        height: 45px;
+    }
 }
 
-.sound-activation-content {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.4s ease-out;
-}
-
-.sound-activation-title {
-    font-size: 1.8em;
-    font-weight: bold;
-    color: #667eea;
-    margin-bottom: 15px;
-}
-
-.sound-activation-message {
-    font-size: 1.1em;
-    color: #666;
-    margin-bottom: 25px;
-    line-height: 1.5;
-}
-
-/* Controles do modo iniciante */
-.modo-iniciante-controls {
-    margin-top: 10px;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-}
-
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 5px;
-}
-
-.checkbox-container label {
-    font-size: 1em;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-}
-
-/* Modal de Tutorial */
-.tutorial-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.3s ease-out;
-}
-
-.tutorial-content {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    width: 95%;
-    max-width: min(550px, 90vw);
-    max-height: 85vh;
-    overflow-y: auto;
-    text-align: center;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.4s ease-out;
-}
-
-@media (min-width: 768px) {
+/* Garantir que modais fiquem corretos em qualquer orientação */
+@media screen and (orientation: landscape) {
+    .game-over-content,
+    .sound-activation-content,
     .tutorial-content {
-        padding: 40px;
-        max-width: 600px;
-    }
-    
-    .tutorial-title {
-        font-size: 2.5em;
-    }
-    
-    .tutorial-message {
-        font-size: 1.4em;
-    }
-}
-
-@media (max-width: 480px) {
-    .tutorial-content {
-        padding: 20px;
-        width: 92%;
-        max-height: 80vh;
-    }
-    
-    .tutorial-title {
-        font-size: 1.8em;
-    }
-    
-    .tutorial-message {
-        font-size: 1.1em;
-        margin-bottom: 20px;
-    }
-    
-    .tutorial-btn {
-        padding: 15px;
-        font-size: 1.1em;
-    }
-}
-
-.tutorial-title {
-    font-size: 1.8em;
-    font-weight: bold;
-    color: #667eea;
-    margin-bottom: 15px;
-}
-
-.tutorial-message {
-    font-size: 1.1em;
-    color: #666;
-    margin-bottom: 25px;
-    line-height: 1.5;
-}
-
-.tutorial-btn {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: linear-gradient(45deg, #06D6A0, #06A678);
-    color: white;
-    box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3);
-}
-
-.tutorial-btn:hover {
-    background: linear-gradient(45deg, #05c090, #059068);
-}
-
-.tutorial-btn:active {
-    transform: scale(0.98);
-}
-
-/* Estilo para botão de pausa quando ativo */
-.pause-active {
-    background: linear-gradient(45deg, #FFD166, #FFB347) !important;
-    border: 3px solid #333 !important;
-    transform: scale(1.05);
-}
-
-/* Toast específico para "Agora é com você" */
-#agoraComVoceToast {
-    background: #FF9800;
-}
-
-/* Adicione esta regra no final do CSS */
-.game-over-modal {
-    transform: rotate(0deg) !important;
-}
-
-.game-over-content {
-    transform: rotate(0deg) !important;
-}
-
-/* Quando em modo retrato, garantir que o modal não rotacione */
-@media screen and (orientation: portrait) {
-    .game-over-modal,
-    .game-over-content {
-        transform: rotate(0deg) !important;
+        max-width: 500px;
+        max-height: 85vh;
     }
 }
 
 </style>
-
 
 </head>
 
@@ -2806,6 +2633,7 @@ function stopAutoSave() {
 }
 
 // Função para mostrar modal de carregamento
+// Função para mostrar modal de carregamento
 function showLoadModal() {
     const savedState = localStorage.getItem(STORAGE_KEY);
     
@@ -2817,23 +2645,12 @@ function showLoadModal() {
     try {
         const gameState = JSON.parse(savedState);
         const saveDate = new Date(gameState.timestamp);
-        const timeStr = saveDate.toLocaleTimeString();
         const dateStr = saveDate.toLocaleDateString();
-        
-        // OCULTAR o rotated-content
-        const rotatedContent = document.querySelector('.rotated-content');
-        if (rotatedContent) {
-            rotatedContent.style.display = 'none';
-        }
-        
-        // GIRAR O MODAL PARA VERTICAL
-        const modal = document.getElementById('gameOverModal');
-        modal.style.transform = 'rotate(0deg)';
-        modal.style.transformOrigin = 'center center';
+        const timeStr = saveDate.toLocaleTimeString();
         
         const modalContent = `
-            <div class="game-over-content" style="max-width: 350px; transform: rotate(0deg);">
-                <div class="game-over-title">🔄 Jogo Salvo</div>
+            <div class="game-over-content" style="max-width: 350px; margin: 0 auto;">
+                <div class="game-over-title">🔄 Jogo Salvo 1</div>
                 <div class="game-over-stats" style="margin: 20px 0;">
                     <div style="font-size: 0.9em; color: #666;">Encontramos um jogo salvo de:</div>
                     <div style="font-size: 1.2em; margin: 10px 0;">${dateStr} às ${timeStr}</div>
@@ -2853,17 +2670,18 @@ function showLoadModal() {
                     </div>
                 </div>
                 <button class="modal-btn restart-btn" onclick="loadGameStateAndContinue()">
-                    ✅ Carregar Jogo 1
+                    ✅ Carregar Jogo
                 </button>
-                <button class="modal-btn close-btn" onclick="clearSavedGame(); this.closest('.game-over-modal').style.display='none'; mostrarRotatedContent()">
+                <button class="modal-btn close-btn" onclick="clearSavedGame(); this.closest('.game-over-modal').style.display='none';">
                     🗑️ Descartar Save
                 </button>
-                <button class="modal-btn close-btn" onclick="this.closest('.game-over-modal').style.display='none'; mostrarRotatedContent()">
+                <button class="modal-btn close-btn" onclick="this.closest('.game-over-modal').style.display='none';">
                     ✕ Continuar Novo Jogo
                 </button>
             </div>
         `;
         
+        const modal = document.getElementById('gameOverModal');
         modal.innerHTML = modalContent;
         modal.style.display = 'flex';
         
