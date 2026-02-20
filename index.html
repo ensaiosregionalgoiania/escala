@@ -2833,7 +2833,7 @@ function showLoadModal() {
         
         const modalContent = `
             <div class="game-over-content" style="max-width: 350px; transform: rotate(0deg);">
-                <div class="game-over-title">🔄 Jogo Salvo 1</div>
+                <div class="game-over-title">🔄 Jogo Salvo</div>
                 <div class="game-over-stats" style="margin: 20px 0;">
                     <div style="font-size: 0.9em; color: #666;">Encontramos um jogo salvo de:</div>
                     <div style="font-size: 1.2em; margin: 10px 0;">${dateStr} às ${timeStr}</div>
@@ -2853,7 +2853,7 @@ function showLoadModal() {
                     </div>
                 </div>
                 <button class="modal-btn restart-btn" onclick="loadGameStateAndContinue()">
-                    ✅ Carregar Jogo
+                    ✅ Carregar Jogo 1
                 </button>
                 <button class="modal-btn close-btn" onclick="clearSavedGame(); this.closest('.game-over-modal').style.display='none'; mostrarRotatedContent()">
                     🗑️ Descartar Save
