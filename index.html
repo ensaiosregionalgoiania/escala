@@ -659,6 +659,23 @@ h1 {
     background: #FF9800;
 }
 
+/* Adicione esta regra no final do CSS */
+.game-over-modal {
+    transform: rotate(0deg) !important;
+}
+
+.game-over-content {
+    transform: rotate(0deg) !important;
+}
+
+/* Quando em modo retrato, garantir que o modal não rotacione */
+@media screen and (orientation: portrait) {
+    .game-over-modal,
+    .game-over-content {
+        transform: rotate(0deg) !important;
+    }
+}
+
 </style>
 
 
@@ -2809,9 +2826,14 @@ function showLoadModal() {
             rotatedContent.style.display = 'none';
         }
         
+        // GIRAR O MODAL PARA VERTICAL
+        const modal = document.getElementById('gameOverModal');
+        modal.style.transform = 'rotate(0deg)';
+        modal.style.transformOrigin = 'center center';
+        
         const modalContent = `
-            <div class="game-over-content" style="max-width: 350px;">
-                <div class="game-over-title">🔄 Jogo Salvo1</div>
+            <div class="game-over-content" style="max-width: 350px; transform: rotate(0deg);">
+                <div class="game-over-title">🔄 Jogo Salvo 1</div>
                 <div class="game-over-stats" style="margin: 20px 0;">
                     <div style="font-size: 0.9em; color: #666;">Encontramos um jogo salvo de:</div>
                     <div style="font-size: 1.2em; margin: 10px 0;">${dateStr} às ${timeStr}</div>
@@ -2842,7 +2864,6 @@ function showLoadModal() {
             </div>
         `;
         
-        const modal = document.getElementById('gameOverModal');
         modal.innerHTML = modalContent;
         modal.style.display = 'flex';
         
@@ -2921,6 +2942,19 @@ function mostrarRotatedContent() {
         rotatedContent.style.display = 'block';
     }
 }
+
+// Função para mostrar o rotated-content novamente
+function mostrarRotatedContent() {
+    const rotatedContent = document.querySelector('.rotated-content');
+    if (rotatedContent) {
+        rotatedContent.style.display = 'block';
+    }
+    
+    // Resetar rotação do modal para o padrão
+    const modal = document.getElementById('gameOverModal');
+    modal.style.transform = '';
+}
+
     </script>
 </body>
 </html>
